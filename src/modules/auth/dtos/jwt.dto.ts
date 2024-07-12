@@ -21,14 +21,3 @@ export class JwtDto {
   @Type(() => String)
   refreshToken: string;
 }
-
-export class RefreshJwtDto {
-  @ApiProperty({
-    type: String,
-    description: 'Refresh токен',
-    required: true,
-  })
-  @IsString()
-  @Type(() => String)
-  refreshToken: string;
-}

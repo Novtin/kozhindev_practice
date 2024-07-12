@@ -1,21 +1,23 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './module/app.module';
-import * as dotenv from 'dotenv';
+import { AppModule } from './modules/app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as process from 'node:process';
+import { useContainer } from 'class-validator';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
-  dotenv.config();
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('/api');
+  const config = app.get(ConfigService);
   const configSwagger = new DocumentBuilder()
     .setTitle(`Backend Mini Twitter`)
     .setDescription('API Documentation')
-    .addServer(`http://${process.env.HTTP_HOST}:${process.env.HTTP_PORT}/api`)
+    .addServer(
+      `http://${config.get<string>('http.host')}:${config.get<string>('http.port')}/api`,
+    )
     .build();
   const document = SwaggerModule.createDocument(app, configSwagger);
   SwaggerModule.setup(`/api/docs`, app, document);
-
-  await app.listen(process.env.HTTP_PORT);
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
+  await app.listen(config.get<string>('http.port'));
 }
 bootstrap();

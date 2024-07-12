@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsEmail, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class LoginDto {
@@ -9,6 +9,7 @@ export class LoginDto {
     required: true,
   })
   @IsString()
+  @IsEmail()
   @Type(() => String)
   email: string;
 

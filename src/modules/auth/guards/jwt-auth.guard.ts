@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { UserService } from '../user/user.service';
-import { TokenService } from './token.service';
-import { Payload } from './payload.type';
+import { UserService } from '../../user/services/user.service';
+import { TokenService } from '../services/token.service';
+import { Payload } from '../types/payload.type';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -9,6 +9,7 @@ export class JwtAuthGuard implements CanActivate {
     private readonly userService: UserService,
     private readonly tokenService: TokenService,
   ) {}
+
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
     if (req.headers.authorization) {
@@ -16,7 +17,13 @@ export class JwtAuthGuard implements CanActivate {
         req.headers.authorization,
       );
       if (payload) {
-        if (await this.userService.existByEmail(payload.email)) {
+        const isUserExistsByEmail: boolean =
+          await this.userService.existByEmail(payload.email);
+        if (isUserExistsByEmail) {
+          req.user = {
+            id: payload.id,
+            email: payload.email,
+          };
           return true;
         }
       }

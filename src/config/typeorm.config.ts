@@ -1,7 +1,7 @@
-import { DataSource } from 'typeorm';
+import { registerAs } from '@nestjs/config';
 import * as process from 'process';
 
-export default new DataSource({
+export default registerAs('typeorm', () => ({
   type: <any>process.env.DB_TYPE,
   host: process.env.DB_HOST,
   port: +process.env.DB_PORT,
@@ -13,4 +13,4 @@ export default new DataSource({
   migrations: [process.env.DB_MIGRATIONS],
   migrationsRun: process.env.DB_MIGRATIONS_RUN === 'true',
   migrationsTableName: process.env.DB_MIGRATIONS_TABLE_NAME,
-});
+}));
