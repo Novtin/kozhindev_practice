@@ -1,14 +1,13 @@
 import {
   ForbiddenException,
   Injectable,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { LoginDto } from '../dtos/login.dto';
 import { RegisterDto } from '../dtos/register.dto';
 import { UserService } from '../../user/services/user.service';
 import { UserEntity } from '../../user/entities/user.entity';
-import { HashService } from './hash.service';
+import { HashService } from '../../user/services/hash.service';
 import { TokenService } from './token.service';
 import { JwtDto } from '../dtos/jwt.dto';
 import { Payload } from '../types/payload.type';
@@ -23,16 +22,7 @@ export class AuthService {
   ) {}
 
   async login(loginDto: LoginDto): Promise<JwtDto> {
-    const isUserExistsByEmail: boolean = await this.userService.existByEmail(
-      loginDto.email,
-    );
-    if (!isUserExistsByEmail) {
-      throw new NotFoundException('User is not found');
-    }
-    const user: UserEntity = await this.userService.findOneByEmail(
-      loginDto.email,
-    );
-
+    const user: UserEntity = await this.userService.findByEmail(loginDto.email);
     const isPasswordValid: boolean = await this.hashService.compareTextAndHash(
       loginDto.password,
       user.passwordHash,
