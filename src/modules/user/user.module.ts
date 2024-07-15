@@ -3,21 +3,17 @@ import { UserService } from './services/user.service';
 import { UserRepository } from './repositories/user.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
-import { IsUserAlreadyExistByNickname } from './constraints/is-user-already-exist-by-nickname.constraint';
-import { IsUserAlreadyExistByEmail } from './constraints/is-user-already-exist-by-email.constraint';
+import { UniqueUserNicknameValidator } from './validators/unique-user-nickname.validator';
+import { UniqueUserEmailValidator } from './validators/unique-user-email.validator';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity])],
   providers: [
     UserService,
     UserRepository,
-    IsUserAlreadyExistByNickname,
-    IsUserAlreadyExistByEmail,
+    UniqueUserNicknameValidator,
+    UniqueUserEmailValidator,
   ],
-  exports: [
-    UserService,
-    IsUserAlreadyExistByNickname,
-    IsUserAlreadyExistByEmail,
-  ],
+  exports: [UserService, UniqueUserNicknameValidator, UniqueUserEmailValidator],
 })
 export class UserModule {}

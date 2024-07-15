@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsString, Validate } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsUserAlreadyExistByEmail } from '../../user/constraints/is-user-already-exist-by-email.constraint';
-import { IsUserAlreadyExistByNickname } from '../../user/constraints/is-user-already-exist-by-nickname.constraint';
+import { UniqueUserEmailValidator } from '../../user/validators/unique-user-email.validator';
+import { UniqueUserNicknameValidator } from '../../user/validators/unique-user-nickname.validator';
 
 export class RegisterDto {
   @ApiProperty({
@@ -30,7 +30,7 @@ export class RegisterDto {
   })
   @IsString()
   @IsEmail()
-  @Validate(IsUserAlreadyExistByEmail)
+  @Validate(UniqueUserEmailValidator)
   @Type(() => String)
   email: string;
 
@@ -58,7 +58,7 @@ export class RegisterDto {
     required: true,
   })
   @IsString()
-  @Validate(IsUserAlreadyExistByNickname)
+  @Validate(UniqueUserNicknameValidator)
   @Type(() => String)
   nickname: string;
 
