@@ -1,15 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, Validate } from 'class-validator';
-import { IsIdExist } from '../constraints/is-id-exist';
-import { Type } from 'class-transformer';
 
-export class IdDto {
+import { Type } from 'class-transformer';
+import { UserIdExistValidator } from '../validators/user-id-exist.validator';
+
+export class IdUserDto {
   @ApiProperty({
     type: String,
     description: 'Идентификатор пользователя',
     required: true,
   })
-  @Validate(IsIdExist)
+  @Validate(UserIdExistValidator)
   @Type(() => Number)
   @IsNumber()
   id: number;

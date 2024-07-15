@@ -6,11 +6,11 @@ import { UserEntity } from './entities/user.entity';
 import { UniqueUserNicknameValidator } from './validators/unique-user-nickname.validator';
 import { UniqueUserEmailValidator } from './validators/unique-user-email.validator';
 import { UserController } from './controllers/user.controller';
-import { IsEmailUniqueForUpdate } from './constraints/is-email-unique-for-update';
-import { IsNicknameUniqueForUpdate } from './constraints/is-nickname-unique-for-update';
-import { IsIdExist } from './constraints/is-id-exist';
-import { IsEmailExist } from './constraints/is-email-exist';
 import { HashService } from './services/hash.service';
+import { UniqueUserEmailForUpdateValidator } from './validators/unique-user-email-for-update.validator';
+import { UniqueUserNicknameForUpdateValidator } from './validators/unique-user-nickname-for-update.validator';
+import { UserIdExistValidator } from './validators/user-id-exist.validator';
+import { UserEmailExistValidator } from './validators/user-email-exist.validator';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity])],
@@ -19,16 +19,17 @@ import { HashService } from './services/hash.service';
     UserRepository,
     UniqueUserNicknameValidator,
     UniqueUserEmailValidator,
-    IsEmailUniqueForUpdate,
-    IsNicknameUniqueForUpdate,
-    IsIdExist,
-    IsEmailExist,
+    UniqueUserEmailForUpdateValidator,
+    UniqueUserNicknameForUpdateValidator,
+    UserIdExistValidator,
+    UserEmailExistValidator,
     HashService,
   ],
   controllers: [UserController],
   exports: [
     UserService,
-    UniqueUserNicknameValidator, UniqueUserEmailValidator,
+    UniqueUserNicknameValidator,
+    UniqueUserEmailValidator,
     HashService,
   ],
 })

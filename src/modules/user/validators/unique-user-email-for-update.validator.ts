@@ -7,9 +7,11 @@ import { Injectable } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { UserEntity } from '../entities/user.entity';
 
-@ValidatorConstraint({ name: 'isEmailUniqueForUpdate', async: true })
+@ValidatorConstraint({ name: 'uniqueUserEmailForUpdateValidator', async: true })
 @Injectable()
-export class IsEmailUniqueForUpdate implements ValidatorConstraintInterface {
+export class UniqueUserEmailForUpdateValidator
+  implements ValidatorConstraintInterface
+{
   constructor(protected readonly userService: UserService) {}
 
   async validate(text: string, args: ValidationArguments): Promise<boolean> {

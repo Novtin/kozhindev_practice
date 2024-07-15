@@ -11,8 +11,9 @@ import {
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from '../services/user.service';
 import { UserEntity } from '../entities/user.entity';
-import { UpdateDto } from '../dto/update.dto';
-import { IdDto } from '../dto/id.dto';
+
+import { UpdateUserDto } from '../dtos/update-user.dto';
+import { IdUserDto } from '../dtos/id-user.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -24,8 +25,8 @@ export class UserController {
     type: UserEntity,
   })
   @Get(':id')
-  findById(@Param() idDto: IdDto): Promise<UserEntity> {
-    return this.userService.findById(idDto.id);
+  findById(@Param() idUserDto: IdUserDto): Promise<UserEntity> {
+    return this.userService.findById(idUserDto.id);
   }
 
   @ApiOkResponse({
@@ -40,15 +41,15 @@ export class UserController {
     type: UserEntity,
   })
   @Patch()
-  update(@Body() updateDto: UpdateDto): Promise<UserEntity> {
-    return this.userService.update(updateDto);
+  update(@Body() updateUserDto: UpdateUserDto): Promise<UserEntity> {
+    return this.userService.update(updateUserDto);
   }
 
   @ApiOkResponse({
     type: undefined,
   })
   @Delete(':id')
-  deleteById(@Param() idDto: IdDto): Promise<void> {
-    return this.userService.deleteById(idDto.id);
+  deleteById(@Param() idUserDto: IdUserDto): Promise<void> {
+    return this.userService.deleteById(idUserDto.id);
   }
 }

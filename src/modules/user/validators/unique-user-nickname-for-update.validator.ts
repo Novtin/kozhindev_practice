@@ -7,9 +7,14 @@ import { Injectable } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { UserEntity } from '../entities/user.entity';
 
-@ValidatorConstraint({ name: 'isNicknameUniqueForUpdate', async: true })
+@ValidatorConstraint({
+  name: 'uniqueUserNicknameForUpdateValidator',
+  async: true,
+})
 @Injectable()
-export class IsNicknameUniqueForUpdate implements ValidatorConstraintInterface {
+export class UniqueUserNicknameForUpdateValidator
+  implements ValidatorConstraintInterface
+{
   constructor(protected readonly userService: UserService) {}
 
   async validate(text: string, args: ValidationArguments): Promise<boolean> {

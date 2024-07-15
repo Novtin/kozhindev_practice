@@ -7,17 +7,17 @@ import {
   Validate,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsEmailUniqueForUpdate } from '../constraints/is-email-unique-for-update';
-import { IsNicknameUniqueForUpdate } from '../constraints/is-nickname-unique-for-update';
-import { IsIdExist } from '../constraints/is-id-exist';
+import { UniqueUserEmailForUpdateValidator } from '../validators/unique-user-email-for-update.validator';
+import { UserIdExistValidator } from '../validators/user-id-exist.validator';
+import { UniqueUserNicknameForUpdateValidator } from '../validators/unique-user-nickname-for-update.validator';
 
-export class UpdateDto {
+export class UpdateUserDto {
   @ApiProperty({
     type: String,
     description: 'Идентификатор пользователя',
     required: true,
   })
-  @Validate(IsIdExist)
+  @Validate(UserIdExistValidator)
   @Type(() => Number)
   @IsNumber()
   id: number;
@@ -50,7 +50,7 @@ export class UpdateDto {
   @IsString()
   @IsEmail()
   @IsOptional()
-  @Validate(IsEmailUniqueForUpdate)
+  @Validate(UniqueUserEmailForUpdateValidator)
   @Type(() => String)
   email?: string;
 
@@ -81,7 +81,7 @@ export class UpdateDto {
   })
   @IsString()
   @IsOptional()
-  @Validate(IsNicknameUniqueForUpdate)
+  @Validate(UniqueUserNicknameForUpdateValidator)
   @Type(() => String)
   nickname?: string;
 

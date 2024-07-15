@@ -1,7 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, DeleteResult, Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { UserEntity } from '../entities/user.entity';
-import { UpdateDto } from '../dto/update.dto';
+import { UpdateUserDto } from '../dtos/update-user.dto';
 
 export class UserRepository {
   constructor(
@@ -43,9 +43,9 @@ export class UserRepository {
     return this.userRepository.find();
   }
 
-  async update(updateDto: UpdateDto): Promise<UserEntity> {
-    await this.userRepository.update(updateDto.id, updateDto);
-    return await this.findById(updateDto.id);
+  async update(updateUserDto: UpdateUserDto): Promise<UserEntity> {
+    await this.userRepository.update(updateUserDto.id, updateUserDto);
+    return await this.findById(updateUserDto.id);
   }
 
   async deleteById(id: number): Promise<void> {

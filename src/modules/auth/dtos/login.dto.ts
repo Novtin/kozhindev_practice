@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsString, Validate } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsEmailExist } from '../../user/constraints/is-email-exist';
+import { UserEmailExistValidator } from '../../user/validators/user-email-exist.validator';
 
 export class LoginDto {
   @ApiProperty({
@@ -9,7 +9,7 @@ export class LoginDto {
     description: 'Электронная почта',
     required: true,
   })
-  @Validate(IsEmailExist)
+  @Validate(UserEmailExistValidator)
   @IsString()
   @IsEmail()
   @Type(() => String)
