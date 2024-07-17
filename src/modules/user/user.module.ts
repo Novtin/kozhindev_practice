@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { UserService } from './services/user.service';
 import { UserRepository } from './repositories/user.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -9,11 +9,14 @@ import { UserController } from './controllers/user.controller';
 import { HashService } from './services/hash.service';
 import { UniqueUserEmailForUpdateValidator } from './validators/unique-user-email-for-update.validator';
 import { UniqueUserNicknameForUpdateValidator } from './validators/unique-user-nickname-for-update.validator';
-import { UserIdExistValidator } from './validators/user-id-exist.validator';
-import { UserEmailExistValidator } from './validators/user-email-exist.validator';
+import { AuthModule } from '../auth/auth.module';
+import { TransformInterceptor } from './interceptors/transform.interceptor';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity])],
+  imports: [
+    TypeOrmModule.forFeature([UserEntity]),
+    forwardRef(() => AuthModule),
+  ],
   providers: [
     UserService,
     UserRepository,
@@ -21,9 +24,8 @@ import { UserEmailExistValidator } from './validators/user-email-exist.validator
     UniqueUserEmailValidator,
     UniqueUserEmailForUpdateValidator,
     UniqueUserNicknameForUpdateValidator,
-    UserIdExistValidator,
-    UserEmailExistValidator,
     HashService,
+    TransformInterceptor,
   ],
   controllers: [UserController],
   exports: [

@@ -6,12 +6,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import httpConfig from '../config/http.config';
+import paginationConfig from '../config/pagination.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [typeOrmConfig, jwtConfig, httpConfig],
+      load: [typeOrmConfig, jwtConfig, httpConfig, paginationConfig],
       envFilePath: '.env',
     }),
     TypeOrmModule.forRootAsync({

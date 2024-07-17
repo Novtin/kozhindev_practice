@@ -8,7 +8,6 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { UniqueUserEmailForUpdateValidator } from '../validators/unique-user-email-for-update.validator';
-import { UserIdExistValidator } from '../validators/user-id-exist.validator';
 import { UniqueUserNicknameForUpdateValidator } from '../validators/unique-user-nickname-for-update.validator';
 
 export class UpdateUserDto {
@@ -17,7 +16,6 @@ export class UpdateUserDto {
     description: 'Идентификатор пользователя',
     required: true,
   })
-  @Validate(UserIdExistValidator)
   @Type(() => Number)
   @IsNumber()
   id: number;
@@ -84,15 +82,4 @@ export class UpdateUserDto {
   @Validate(UniqueUserNicknameForUpdateValidator)
   @Type(() => String)
   nickname?: string;
-
-  // Будущая реализация
-  // @ApiProperty({
-  //   type: String,
-  //   description: 'Фотография пользователя',
-  //   required: false,
-  // })
-  // @IsString()
-  // @IsOptional()
-  // @Type(() => Number)
-  // photo?: number;
 }

@@ -61,15 +61,4 @@ export class CreateUserDto {
   @Validate(UniqueUserNicknameValidator)
   @Type(() => String)
   nickname: string;
-
-  // Будущая реализация
-  // @ApiProperty({
-  //   type: String,
-  //   description: 'Фотография пользователя',
-  //   required: false,
-  // })
-  // @IsString()
-  // @IsOptional()
-  // @Type(() => Number)
-  // photo?: number;
 }

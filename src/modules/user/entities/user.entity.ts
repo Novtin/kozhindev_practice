@@ -1,6 +1,7 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -66,13 +67,8 @@ export class UserEntity {
   })
   updatedAt: Date;
 
-  // Реализация OneToOne с сущностью "file"
-  // пока не сделана, поэтому код в комментарии
-  //
-  // @Column('int', {
-  //   name: 'photoId',
-  //   comment: 'Идентификатор аватарки',
-  //   nullable: true,
-  // })
-  // photoId: number;
+  @DeleteDateColumn({
+    name: 'deleteAt',
+  })
+  deleteAt: Date;
 }

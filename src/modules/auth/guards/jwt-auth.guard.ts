@@ -14,7 +14,7 @@ export class JwtAuthGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
     if (req.headers.authorization) {
       const payload: Payload = await this.tokenService.verify(
-        req.headers.authorization,
+        req.headers.authorization.split(' ')[1],
       );
       if (payload) {
         const isUserExistsByEmail: boolean =

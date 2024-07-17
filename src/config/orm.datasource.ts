@@ -1,6 +1,8 @@
 import { DataSource } from 'typeorm';
 import * as process from 'process';
+import * as dotenv from 'dotenv';
 
+dotenv.config();
 export default new DataSource({
   type: <any>process.env.DB_TYPE,
   host: process.env.DB_HOST,
