@@ -11,11 +11,13 @@ import { UniqueUserEmailForUpdateValidator } from './validators/unique-user-emai
 import { UniqueUserNicknameForUpdateValidator } from './validators/unique-user-nickname-for-update.validator';
 import { AuthModule } from '../auth/auth.module';
 import { TransformInterceptor } from '../../common/interceptors/transform.interceptor';
+import { FileModule } from '../file/file.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserEntity]),
     forwardRef(() => AuthModule),
+    FileModule
   ],
   providers: [
     UserService,

@@ -3,9 +3,12 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { FileEntity } from '../../file/entities/file.entity';
 
 @Entity({ name: 'user' })
 export class UserEntity {
@@ -71,4 +74,10 @@ export class UserEntity {
     name: 'deletedAt',
   })
   deletedAt: Date;
+  @OneToOne(() => FileEntity)
+  @Column({ nullable: true, default: null })
+  @JoinColumn({
+    name: 'photoId',
+  })
+  photoId: FileEntity;
 }

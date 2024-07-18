@@ -6,6 +6,8 @@ import { CreateUserDto } from '../dtos/create-user.dto';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { CriteriaUserDto } from '../dtos/criteria-user.dto';
 import { ConfigService } from '@nestjs/config';
+import { FileService } from '../../file/services/file.service';
+import { FileEntity } from '../../file/entities/file.entity';
 
 @Injectable()
 export class UserService {
@@ -13,6 +15,7 @@ export class UserService {
     private readonly userRepository: UserRepository,
     private readonly hashService: HashService,
     private readonly configService: ConfigService,
+    private readonly fileService: FileService,
   ) {}
 
   async create(createDto: CreateUserDto): Promise<UserEntity> {
@@ -81,5 +84,20 @@ export class UserService {
     if (!(await this.existByEmail(email))) {
       throw new NotFoundException();
     }
+  }
+
+  async uploadAvatar(
+    avatar: Express.Multer.File,
+    userId: number,
+  ): Promise<UserEntity> {
+    const userFromDB: UserEntity = await this.findById(userId);
+    const fileIdForDel: number = userFromDB.photoId?.id;
+    const newFile: FileEntity = await this.fileService.create(avatar);
+    userFromDB.photoId = newFile;
+    const updatedUser: UserEntity = await this.update(userFromDB);
+    if (fileIdForDel) {
+      await this.fileService.deleteById(fileIdForDel);
+    }
+    return updatedUser;
   }
 }
