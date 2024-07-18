@@ -53,7 +53,7 @@ export class UserService {
     const {
       query,
       page = this.configService.get('pagination.defaultPage'),
-      limit = this.configService.get('pagination.defaultPage'),
+      limit = this.configService.get('pagination.defaultLimit'),
     } = findAllUserDto;
     const querySplit: string[] = query?.trim()?.split(' ');
     let where: any = {};

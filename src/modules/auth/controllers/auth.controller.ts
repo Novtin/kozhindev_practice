@@ -4,6 +4,7 @@ import {
   Body,
   UsePipes,
   ValidationPipe,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { LoginDto } from '../dtos/login.dto';
@@ -12,6 +13,8 @@ import { RefreshJwtDto } from '../dtos/refresh-jwt.dto';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { JwtDto } from '../dtos/jwt.dto';
 import { UserEntity } from '../../user/entities/user.entity';
+import { TransformInterceptor } from '../../user/interceptors/transform.interceptor';
+import { UserSchema } from '../../user/schemas/user.schema';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -28,8 +31,9 @@ export class AuthController {
   }
 
   @ApiOkResponse({
-    type: UserEntity,
+    type: UserSchema,
   })
+  @UseInterceptors(new TransformInterceptor(UserSchema))
   @Post('register')
   register(@Body() registerDto: RegisterDto): Promise<UserEntity> {
     return this.authService.register(registerDto);

@@ -25,7 +25,6 @@ import { Payload } from '../../auth/types/payload.type';
 import { FindAllUserDto } from '../dtos/find-all-user.dto';
 import { TransformInterceptor } from '../interceptors/transform.interceptor';
 import { UserSchema } from '../schemas/user.schema';
-import { Type } from 'class-transformer';
 
 @ApiTags('user')
 @Controller('user')
@@ -34,7 +33,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiOkResponse({
-    type: UserEntity,
+    type: UserSchema,
   })
   @UseInterceptors(new TransformInterceptor(UserSchema))
   @Get(':id')
@@ -43,7 +42,7 @@ export class UserController {
   }
 
   @ApiOkResponse({
-    type: UserEntity,
+    type: UserSchema,
     isArray: true,
   })
   @UseInterceptors(new TransformInterceptor(UserSchema))
@@ -53,8 +52,9 @@ export class UserController {
   }
 
   @ApiOkResponse({
-    type: UserEntity,
+    type: UserSchema,
   })
+  @UseInterceptors(new TransformInterceptor(UserSchema))
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(
