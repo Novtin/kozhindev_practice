@@ -4,9 +4,9 @@ import { UserEntity } from '../entities/user.entity';
 import { HashService } from './hash.service';
 import { CreateUserDto } from '../dtos/create-user.dto';
 import { UpdateUserDto } from '../dtos/update-user.dto';
-import { FindAllUserDto } from '../dtos/find-all-user.dto';
+import { CriteriaUserDto } from '../dtos/criteria-user.dto';
 import { ConfigService } from '@nestjs/config';
-import { Like } from 'typeorm';
+import { FindOptionsWhere } from 'typeorm';
 
 @Injectable()
 export class UserService {
@@ -16,8 +16,8 @@ export class UserService {
     private readonly configService: ConfigService,
   ) {}
 
-  private readonly LENGTH_ARRAY_FIRST_NAME_AND_SURNAME: number = 2;
-  private readonly LENGTH_ARRAY_NICKNAME: number = 1;
+  private readonly TWO_WORDS_IN_QUERY: number = 2;
+  private readonly ONE_WORD_IN_QUERY: number = 1;
 
   async create(createDto: CreateUserDto): Promise<UserEntity> {
     return this.userRepository.create(createDto);
@@ -49,26 +49,29 @@ export class UserService {
     return this.userRepository.findById(id);
   }
 
-  async findAll(findAllUserDto: FindAllUserDto): Promise<UserEntity[]> {
+  async findByCriteria(
+    criteriaUserDto: CriteriaUserDto,
+  ): Promise<UserEntity[]> {
     const {
       query,
-      page = this.configService.get('pagination.defaultPage'),
+      page = 0,
       limit = this.configService.get('pagination.defaultLimit'),
-    } = findAllUserDto;
+    } = criteriaUserDto;
     const querySplit: string[] = query?.trim()?.split(' ');
-    let where: any = {};
-    if (querySplit?.length == this.LENGTH_ARRAY_FIRST_NAME_AND_SURNAME) {
-      where = {
-        firstName: querySplit[0],
-        surname: querySplit[1],
-      };
-    } else if (querySplit?.length == this.LENGTH_ARRAY_NICKNAME) {
-      where = {
-        nickname: querySplit[0],
-      };
+    let where: FindOptionsWhere<UserEntity>;
+    if (querySplit?.length == this.TWO_WORDS_IN_QUERY) {
+      where = [
+        { firstName: querySplit[0], surname: querySplit[1] },
+      ] as FindOptionsWhere<UserEntity>;
+    } else if (querySplit?.length == this.ONE_WORD_IN_QUERY) {
+      where = [
+        { firstName: querySplit[0] },
+        { surname: querySplit[0] },
+        { nickname: querySplit[0] },
+      ] as FindOptionsWhere<UserEntity>;
     }
 
-    return await this.userRepository.findAll(where, limit, (page - 1) * limit);
+    return await this.userRepository.findByCriteria(where, limit, page * limit);
   }
 
   async update(updateUserDto: UpdateUserDto): Promise<UserEntity> {

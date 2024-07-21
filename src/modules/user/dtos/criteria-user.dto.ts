@@ -2,7 +2,7 @@ import { IsInt, IsOptional, IsString, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class FindAllUserDto {
+export class CriteriaUserDto {
   @ApiProperty({
     type: String,
     description: 'Параметры запроса',

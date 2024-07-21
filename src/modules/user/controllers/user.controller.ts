@@ -21,10 +21,10 @@ import { UserEntity } from '../entities/user.entity';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { Context } from '../../auth/decorators/context.decorator';
-import { Payload } from '../../auth/types/payload.type';
-import { FindAllUserDto } from '../dtos/find-all-user.dto';
+import { CriteriaUserDto } from '../dtos/criteria-user.dto';
 import { TransformInterceptor } from '../interceptors/transform.interceptor';
 import { UserSchema } from '../schemas/user.schema';
+import { ContextDto } from '../../auth/dtos/context.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -47,8 +47,10 @@ export class UserController {
   })
   @UseInterceptors(new TransformInterceptor(UserSchema))
   @Get()
-  findAll(@Query() findAllUserDto: FindAllUserDto): Promise<UserEntity[]> {
-    return this.userService.findAll(findAllUserDto);
+  findByCriteria(
+    @Query() criteriaUserDto: CriteriaUserDto,
+  ): Promise<UserEntity[]> {
+    return this.userService.findByCriteria(criteriaUserDto);
   }
 
   @ApiOkResponse({
@@ -60,12 +62,12 @@ export class UserController {
   update(
     @Param('id', ParseIntPipe) userId: number,
     @Body() updateUserDto: UpdateUserDto,
-    @Context() userFromToken: Payload,
+    @Context() context: ContextDto,
   ): Promise<UserEntity> {
     if (userId !== updateUserDto.id) {
       throw new BadRequestException();
     }
-    this.checkPermission(updateUserDto.id, userFromToken.id);
+    this.checkPermission(updateUserDto.id, context.userId);
     return this.userService.update(updateUserDto);
   }
 
@@ -74,9 +76,9 @@ export class UserController {
   @Delete(':id')
   deleteById(
     @Param('id', ParseIntPipe) userId: number,
-    @Context() userFromToken: Payload,
+    @Context() context: ContextDto,
   ): Promise<void> {
-    this.checkPermission(userId, userFromToken.id);
+    this.checkPermission(userId, context.userId);
     return this.userService.deleteById(userId);
   }
 

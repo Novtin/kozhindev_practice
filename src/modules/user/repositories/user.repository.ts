@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, Repository } from 'typeorm';
+import { DeepPartial, FindOptionsWhere, Repository } from 'typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 
@@ -39,7 +39,11 @@ export class UserRepository {
     return this.dbRepository.findOneBy({ id });
   }
 
-  async findAll(where: any, take: number, skip: number): Promise<UserEntity[]> {
+  async findByCriteria(
+    where: FindOptionsWhere<UserEntity>,
+    take: number,
+    skip: number,
+  ): Promise<UserEntity[]> {
     const [users] = await this.dbRepository.findAndCount({
       where,
       take,

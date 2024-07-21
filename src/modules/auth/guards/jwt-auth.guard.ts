@@ -14,6 +14,7 @@ export class JwtAuthGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
     if (req.headers.authorization) {
       const payload: Payload = await this.tokenService.verify(
+        // Токен приходит в виде 'Bearer <JWT>'
         req.headers.authorization.split(' ')[1],
       );
       if (payload) {
@@ -21,7 +22,7 @@ export class JwtAuthGuard implements CanActivate {
           await this.userService.existByEmail(payload.email);
         if (isUserExistsByEmail) {
           req.user = {
-            id: payload.id,
+            userId: payload.userId,
             email: payload.email,
           };
           return true;

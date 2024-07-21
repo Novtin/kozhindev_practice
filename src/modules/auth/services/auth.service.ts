@@ -33,7 +33,7 @@ export class AuthService {
 
     return await this.tokenService.makeTokens({
       email: user.email,
-      id: user.id,
+      userId: user.id,
     });
   }
 
@@ -53,7 +53,7 @@ export class AuthService {
     }
     const payload: Payload = {
       email: payloadFromToken.email,
-      id: payloadFromToken.id,
+      userId: payloadFromToken.userId,
     };
     return await this.tokenService.makeTokens(payload);
   }
