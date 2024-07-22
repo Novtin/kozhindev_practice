@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class FileDto {
@@ -8,6 +8,7 @@ export class FileDto {
     description: 'Название файла',
     required: true,
   })
+  @IsNotEmpty()
   @Type(() => String)
   @IsString()
   name: string;
@@ -17,6 +18,7 @@ export class FileDto {
     description: 'MIME тип файла',
     required: true,
   })
+  @IsNotEmpty()
   @Type(() => String)
   @IsString()
   mimeType: string;

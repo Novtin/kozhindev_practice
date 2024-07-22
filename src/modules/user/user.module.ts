@@ -17,7 +17,7 @@ import { FileModule } from '../file/file.module';
   imports: [
     TypeOrmModule.forFeature([UserEntity]),
     forwardRef(() => AuthModule),
-    FileModule
+    FileModule,
   ],
   providers: [
     UserService,

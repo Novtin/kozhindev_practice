@@ -48,6 +48,11 @@ export class UserService {
     return this.userRepository.findById(id);
   }
 
+  async findByIdWithRelations(id: number): Promise<UserEntity> {
+    await this.throwExceptionIfNotExistById(id);
+    return this.userRepository.findByIdWithRelations(id);
+  }
+
   async findByCriteria(
     criteriaUserDto: CriteriaUserDto,
   ): Promise<UserEntity[]> {
@@ -90,7 +95,7 @@ export class UserService {
     avatar: Express.Multer.File,
     userId: number,
   ): Promise<UserEntity> {
-    const userFromDB: UserEntity = await this.findById(userId);
+    const userFromDB: UserEntity = await this.findByIdWithRelations(userId);
     const fileIdForDel: number = userFromDB.photoId?.id;
     const newFile: FileEntity = await this.fileService.create(avatar);
     userFromDB.photoId = newFile;

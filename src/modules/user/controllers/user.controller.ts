@@ -14,6 +14,7 @@ import {
   UseInterceptors,
   Post,
   UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import { ApiBody, ApiConsumes, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { UserService } from '../services/user.service';
@@ -83,7 +84,6 @@ export class UserController {
     return this.userService.deleteById(userId);
   }
 
-
   @ApiOkResponse()
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -98,16 +98,18 @@ export class UserController {
   })
   @Post('avatar')
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('avatar', multerOptions))
+  @UseInterceptors(
+    FileInterceptor('avatar', multerOptions),
+    new TransformInterceptor(UserSchema),
+  )
   uploadAvatar(
-    @UploadedFile()
-    avatar: Express.Multer.File,
-    @Context() userFromToken: Payload,
+    @UploadedFile() avatar: Express.Multer.File,
+    @Context() context: ContextDto,
   ): Promise<UserEntity> {
     if (!avatar) {
       throw new BadRequestException('File avatar is missing');
     }
-    return this.userService.uploadAvatar(avatar, userFromToken.id);
+    return this.userService.uploadAvatar(avatar, context.userId);
   }
 
   checkPermission(idFromDto: number, idFromContext: number): void {

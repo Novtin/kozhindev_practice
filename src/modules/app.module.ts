@@ -7,8 +7,6 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import httpConfig from '../config/http.config';
 import { FileModule } from './file/file.module';
-import multerConfig from '../config/multer.config';
-import { MulterModule } from '@nestjs/platform-express';
 import fileConfig from '../config/file.config';
 import paginationConfig from '../config/pagination.config';
 
@@ -21,7 +19,6 @@ import paginationConfig from '../config/pagination.config';
         jwtConfig,
         httpConfig,
         paginationConfig,
-        multerConfig,
         fileConfig,
       ],
       envFilePath: '.env',
@@ -31,11 +28,6 @@ import paginationConfig from '../config/pagination.config';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) =>
         configService.get('typeorm'),
-    }),
-    MulterModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => configService.get('multer'),
     }),
     AuthModule,
     UserModule,

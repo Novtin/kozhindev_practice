@@ -4,12 +4,14 @@ import { FileEntity } from '../entities/file.entity';
 import { FileDto } from '../dtos/file.dto';
 import * as fs from 'node:fs';
 import { join } from 'path';
-import process from 'process';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class FileService {
-  constructor(private readonly fileRepository: FileRepository, private readonly configService: ConfigService) {}
+  constructor(
+    private readonly fileRepository: FileRepository,
+    private readonly configService: ConfigService,
+  ) {}
 
   async findById(id: number): Promise<FileEntity> {
     await this.throwExceptionIfNotExistById(id);
@@ -29,7 +31,7 @@ export class FileService {
     await this.throwExceptionIfNotExistById(id);
     const file: FileEntity = await this.findById(id);
     const path: string = join(
-      ...this.configService.get('file.fileAvatarsPath').split('/'),
+      ...this.configService.get('file.fileSavePath').split('/'),
       file.name,
     );
     fs.unlink(path, (err) => {

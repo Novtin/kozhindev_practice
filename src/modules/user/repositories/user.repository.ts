@@ -45,6 +45,10 @@ export class UserRepository {
   }
 
   async findById(id: number): Promise<UserEntity> {
+    return this.dbRepository.findOneBy({ id });
+  }
+
+  async findByIdWithRelations(id: number): Promise<UserEntity> {
     return this.dbRepository.findOne({
       where: { id: id },
       relations: ['photoId'],

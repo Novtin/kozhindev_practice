@@ -10,8 +10,8 @@ import {
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { FileService } from '../services/file.service';
 import { FileEntity } from '../entities/file.entity';
-import { TransformInterceptor } from '../../user/interceptors/transform.interceptor';
 import { FileSchema } from '../schemas/file.schema';
+import { TransformInterceptor } from '../../../common/interceptors/transform.interceptor';
 
 @ApiTags('file')
 @Controller('file')

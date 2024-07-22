@@ -73,4 +73,13 @@ export class UserSchema {
   @Expose()
   @Type(() => Date)
   updatedAt: Date;
+
+  @ApiProperty({
+    type: Number,
+    description: 'Идентификатор аватара пользователя',
+    required: true,
+  })
+  @Expose()
+  @Type(() => Number)
+  photoId: number;
 }
