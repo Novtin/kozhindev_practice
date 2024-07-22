@@ -10,7 +10,7 @@ import { HashService } from './services/hash.service';
 import { UniqueUserEmailForUpdateValidator } from './validators/unique-user-email-for-update.validator';
 import { UniqueUserNicknameForUpdateValidator } from './validators/unique-user-nickname-for-update.validator';
 import { AuthModule } from '../auth/auth.module';
-import { TransformInterceptor } from './interceptors/transform.interceptor';
+import { TransformInterceptor } from '../../common/interceptors/transform.interceptor';
 
 @Module({
   imports: [

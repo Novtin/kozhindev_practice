@@ -9,7 +9,6 @@ import {
   Patch,
   UseGuards,
   ParseIntPipe,
-  BadRequestException,
   ForbiddenException,
   Query,
   UseInterceptors,
@@ -22,7 +21,7 @@ import { UpdateUserDto } from '../dtos/update-user.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { Context } from '../../auth/decorators/context.decorator';
 import { CriteriaUserDto } from '../dtos/criteria-user.dto';
-import { TransformInterceptor } from '../interceptors/transform.interceptor';
+import { TransformInterceptor } from '../../../common/interceptors/transform.interceptor';
 import { UserSchema } from '../schemas/user.schema';
 import { ContextDto } from '../../auth/dtos/context.dto';
 
@@ -64,9 +63,7 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
     @Context() context: ContextDto,
   ): Promise<UserEntity> {
-    if (userId !== updateUserDto.id) {
-      throw new BadRequestException();
-    }
+    updateUserDto.id = userId;
     this.checkPermission(updateUserDto.id, context.userId);
     return this.userService.update(updateUserDto);
   }
@@ -82,8 +79,8 @@ export class UserController {
     return this.userService.deleteById(userId);
   }
 
-  checkPermission(idFromDto: number, idFromToken: number): void {
-    if (idFromDto !== idFromToken) {
+  checkPermission(idFromDto: number, idFromContext: number): void {
+    if (idFromDto !== idFromContext) {
       throw new ForbiddenException('Forbidden resource');
     }
   }

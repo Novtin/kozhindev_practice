@@ -13,7 +13,7 @@ import { RefreshJwtDto } from '../dtos/refresh-jwt.dto';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { JwtDto } from '../dtos/jwt.dto';
 import { UserEntity } from '../../user/entities/user.entity';
-import { TransformInterceptor } from '../../user/interceptors/transform.interceptor';
+import { TransformInterceptor } from '../../../common/interceptors/transform.interceptor';
 import { UserSchema } from '../../user/schemas/user.schema';
 
 @ApiTags('auth')

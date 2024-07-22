@@ -1,5 +1,11 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, FindOptionsWhere, Repository } from 'typeorm';
+import {
+  DeepPartial,
+  FindOperator,
+  FindOptionsWhere,
+  ILike,
+  Repository,
+} from 'typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 
@@ -8,6 +14,9 @@ export class UserRepository {
     @InjectRepository(UserEntity)
     private readonly dbRepository: Repository<UserEntity>,
   ) {}
+
+  private readonly TWO_WORDS_IN_QUERY: number = 2;
+  private readonly ONE_WORD_IN_QUERY: number = 1;
 
   async create<T extends DeepPartial<UserEntity>>(
     entity: T,
@@ -40,10 +49,36 @@ export class UserRepository {
   }
 
   async findByCriteria(
-    where: FindOptionsWhere<UserEntity>,
+    query: string,
     take: number,
     skip: number,
   ): Promise<UserEntity[]> {
+    const querySplit: string[] = query?.trim()?.split(' ');
+    let where: FindOptionsWhere<UserEntity>;
+    switch (querySplit?.length) {
+      case this.ONE_WORD_IN_QUERY: {
+        const searchValue: FindOperator<string> = ILike(`%${querySplit[0]}%`);
+        where = [
+          { firstName: searchValue },
+          { surname: searchValue },
+          { nickname: searchValue },
+        ] as FindOptionsWhere<UserEntity>;
+        break;
+      }
+      case this.TWO_WORDS_IN_QUERY: {
+        const firstSearchValue: FindOperator<string> = ILike(
+          `%${querySplit[0]}%`,
+        );
+        const secondSearchValue: FindOperator<string> = ILike(
+          `%${querySplit[1]}%`,
+        );
+        where = [
+          { firstName: firstSearchValue, surname: secondSearchValue },
+          { surname: firstSearchValue, firstName: secondSearchValue },
+        ] as FindOptionsWhere<UserEntity>;
+        break;
+      }
+    }
     const [users] = await this.dbRepository.findAndCount({
       where,
       take,

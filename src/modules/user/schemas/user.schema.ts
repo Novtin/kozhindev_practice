@@ -1,8 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsEmail, IsInt, IsString, Validate } from 'class-validator';
 import { Expose, Type } from 'class-transformer';
-import { UniqueUserEmailValidator } from '../validators/unique-user-email.validator';
-import { UniqueUserNicknameValidator } from '../validators/unique-user-nickname.validator';
 
 export class UserSchema {
   @ApiProperty({
@@ -11,7 +8,6 @@ export class UserSchema {
     required: true,
   })
   @Expose()
-  @IsInt()
   @Type(() => Number)
   id: number;
 
@@ -21,7 +17,6 @@ export class UserSchema {
     required: true,
   })
   @Expose()
-  @IsString()
   @Type(() => String)
   firstName: string;
 
@@ -31,7 +26,6 @@ export class UserSchema {
     required: true,
   })
   @Expose()
-  @IsString()
   @Type(() => String)
   surname: string;
 
@@ -41,9 +35,6 @@ export class UserSchema {
     required: true,
   })
   @Expose()
-  @IsString()
-  @IsEmail()
-  @Validate(UniqueUserEmailValidator)
   @Type(() => String)
   email: string;
 
@@ -53,7 +44,6 @@ export class UserSchema {
     required: true,
   })
   @Expose()
-  @IsString()
   @Type(() => String)
   description: string;
 
@@ -63,8 +53,6 @@ export class UserSchema {
     required: true,
   })
   @Expose()
-  @IsString()
-  @Validate(UniqueUserNicknameValidator)
   @Type(() => String)
   nickname: string;
 
@@ -74,7 +62,6 @@ export class UserSchema {
     required: true,
   })
   @Expose()
-  @IsDate()
   @Type(() => Date)
   createdAt: Date;
 
@@ -84,7 +71,6 @@ export class UserSchema {
     required: true,
   })
   @Expose()
-  @IsString()
   @Type(() => Date)
   updatedAt: Date;
 }
