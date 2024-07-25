@@ -104,18 +104,14 @@ export class UserController {
     FileInterceptor('avatarFile', multerImageOptions),
     new TransformInterceptor(UserSchema),
   )
-  async uploadAvatar(
+  uploadAvatar(
     @UploadedFile() avatarFile: Express.Multer.File,
     @Context() context: ContextDto,
   ): Promise<UserEntity> {
     if (!avatarFile) {
       throw new BadRequestException('File avatar is missing');
     }
-    const userEntity: UserEntity = await this.userService.uploadAvatar(
-      avatarFile,
-      context.userId,
-    );
-    return this.userService.findByIdWithRelations(userEntity.id);
+    return this.userService.uploadAvatar(avatarFile, context.userId);
   }
 
   checkPermission(idFromDto: number, idFromContext: number): void {

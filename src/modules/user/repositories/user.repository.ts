@@ -120,7 +120,7 @@ export class UserRepository {
     await this.dbRepository.update(userEntity.id, {
       avatar: userEntity.avatar,
     });
-    return await this.findById(userEntity.id);
+    return await this.findByIdWithRelations(userEntity.id);
   }
 
   async deleteById(id: number): Promise<void> {
