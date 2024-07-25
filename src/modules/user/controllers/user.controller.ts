@@ -28,7 +28,7 @@ import { TransformInterceptor } from '../../../common/interceptors/transform.int
 import { UserSchema } from '../schemas/user.schema';
 import { ContextDto } from '../../auth/dtos/context.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { multerOptions } from '../../../config/multer.config';
+import { multerImageOptions } from '../../../config/multer-image.config';
 
 @ApiTags('user')
 @Controller('user')
@@ -42,7 +42,7 @@ export class UserController {
   @UseInterceptors(new TransformInterceptor(UserSchema))
   @Get(':id')
   findById(@Param('id', ParseIntPipe) userId: number): Promise<UserEntity> {
-    return this.userService.findById(userId);
+    return this.userService.findByIdWithRelations(userId);
   }
 
   @ApiOkResponse({
@@ -84,12 +84,14 @@ export class UserController {
     return this.userService.deleteById(userId);
   }
 
-  @ApiOkResponse()
+  @ApiOkResponse({
+    type: UserSchema,
+  })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
       properties: {
-        avatar: {
+        avatarFile: {
           type: 'string',
           format: 'binary',
         },
@@ -99,17 +101,21 @@ export class UserController {
   @Post('avatar')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(
-    FileInterceptor('avatar', multerOptions),
+    FileInterceptor('avatarFile', multerImageOptions),
     new TransformInterceptor(UserSchema),
   )
-  uploadAvatar(
-    @UploadedFile() avatar: Express.Multer.File,
+  async uploadAvatar(
+    @UploadedFile() avatarFile: Express.Multer.File,
     @Context() context: ContextDto,
   ): Promise<UserEntity> {
-    if (!avatar) {
+    if (!avatarFile) {
       throw new BadRequestException('File avatar is missing');
     }
-    return this.userService.uploadAvatar(avatar, context.userId);
+    const userEntity: UserEntity = await this.userService.uploadAvatar(
+      avatarFile,
+      context.userId,
+    );
+    return this.userService.findByIdWithRelations(userEntity.id);
   }
 
   checkPermission(idFromDto: number, idFromContext: number): void {

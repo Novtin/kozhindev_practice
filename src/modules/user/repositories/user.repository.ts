@@ -51,7 +51,7 @@ export class UserRepository {
   async findByIdWithRelations(id: number): Promise<UserEntity> {
     return this.dbRepository.findOne({
       where: { id: id },
-      relations: ['photoId'],
+      relations: ['avatar'],
     });
   }
 
@@ -90,13 +90,37 @@ export class UserRepository {
       where,
       take,
       skip,
+      relations: ['avatar'],
     });
     return users;
   }
 
   async update(updateUserDto: UpdateUserDto): Promise<UserEntity> {
-    await this.dbRepository.update(updateUserDto.id, updateUserDto);
-    return await this.findById(updateUserDto.id);
+    const {
+      id,
+      nickname,
+      firstName,
+      surname,
+      description,
+      passwordHash,
+      email,
+    } = updateUserDto;
+    await this.dbRepository.update(id, {
+      nickname,
+      firstName,
+      surname,
+      description,
+      passwordHash,
+      email,
+    });
+    return await this.findByIdWithRelations(updateUserDto.id);
+  }
+
+  async updateAvatar(userEntity: UserEntity): Promise<UserEntity> {
+    await this.dbRepository.update(userEntity.id, {
+      avatar: userEntity.avatar,
+    });
+    return await this.findById(userEntity.id);
   }
 
   async deleteById(id: number): Promise<void> {

@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { IsDate, IsInt, IsString } from 'class-validator';
 
 export class FileSchema {
   @ApiProperty({
@@ -10,7 +9,6 @@ export class FileSchema {
   })
   @Expose()
   @Type(() => Number)
-  @IsInt()
   id: number;
 
   @ApiProperty({
@@ -20,7 +18,6 @@ export class FileSchema {
   })
   @Expose()
   @Type(() => String)
-  @IsString()
   name: string;
 
   @ApiProperty({
@@ -30,7 +27,6 @@ export class FileSchema {
   })
   @Expose()
   @Type(() => String)
-  @IsString()
   mimeType: string;
 
   @ApiProperty({
@@ -40,6 +36,5 @@ export class FileSchema {
   })
   @Expose()
   @Type(() => Date)
-  @IsDate()
   createdAt: Date;
 }

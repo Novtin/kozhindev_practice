@@ -23,6 +23,8 @@ export class FileService {
   }
 
   async create(file: Express.Multer.File): Promise<FileEntity> {
+    // Файл сохраняется на диск в контроллере с помощью FileInterceptor
+    // Тут только сохранение в БД
     const fileDto: FileDto = { name: file.filename, mimeType: file.mimetype };
     return this.fileRepository.create(fileDto);
   }

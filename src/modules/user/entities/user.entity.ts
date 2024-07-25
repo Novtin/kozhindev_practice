@@ -74,10 +74,13 @@ export class UserEntity {
     name: 'deletedAt',
   })
   deletedAt: Date;
+
   @OneToOne(() => FileEntity)
-  @Column({ nullable: true, default: null })
   @JoinColumn({
-    name: 'photoId',
+    name: 'avatarId',
   })
-  photoId: FileEntity;
+  avatar: FileEntity;
+
+  @Column('int', { nullable: true, default: null })
+  avatarId: number;
 }

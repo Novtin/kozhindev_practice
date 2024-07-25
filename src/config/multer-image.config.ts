@@ -8,7 +8,7 @@ import { UnsupportedMediaTypeException } from '@nestjs/common';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import * as fs from 'node:fs';
 
-const getMulterOptions = (): MulterOptions => {
+const getMulterImageOptions = (): MulterOptions => {
   return {
     storage: diskStorage({
       destination: (req, file, callback) => {
@@ -46,6 +46,4 @@ const getMulterOptions = (): MulterOptions => {
     },
   };
 };
-export const multerOptions = getMulterOptions();
-
-export default registerAs('multer', (): MulterModuleOptions => multerOptions);
+export const multerImageOptions = getMulterImageOptions();

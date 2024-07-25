@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
+import { FileSchema } from '../../file/schemas/file.schema';
 
 export class UserSchema {
   @ApiProperty({
@@ -75,11 +76,11 @@ export class UserSchema {
   updatedAt: Date;
 
   @ApiProperty({
-    type: Number,
-    description: 'Идентификатор аватара пользователя',
+    type: FileSchema,
+    description: 'Аватар пользователя',
     required: true,
   })
   @Expose()
-  @Type(() => Number)
-  photoId: number;
+  @Type(() => FileSchema)
+  avatar: FileSchema;
 }
