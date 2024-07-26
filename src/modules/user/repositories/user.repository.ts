@@ -52,7 +52,7 @@ export class UserRepository {
   async findByIdWithRelations(id: number): Promise<UserEntity> {
     return this.dbRepository.findOne({
       where: { id: id },
-      relations: ['avatar'],
+      relations: ['avatar', 'subscriptions'],
     });
   }
 
@@ -91,7 +91,7 @@ export class UserRepository {
       where,
       take,
       skip,
-      relations: ['avatar'],
+      relations: ['avatar', 'subscriptions'],
     });
     return users;
   }
@@ -124,5 +124,13 @@ export class UserRepository {
 
   async deleteById(id: number): Promise<void> {
     await this.dbRepository.softDelete({ id });
+  }
+
+  async updateSubscriptions(
+    id: number,
+    subscriptions: UserEntity[],
+  ): Promise<UserEntity> {
+    await this.dbRepository.save({ id, subscriptions });
+    return await this.findByIdWithRelations(id);
   }
 }

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { UserRepository } from '../repositories/user.repository';
 import { UserEntity } from '../entities/user.entity';
 import { HashService } from './hash.service';
@@ -107,5 +111,51 @@ export class UserService {
 
   private async updateAvatar(userId: number, avatar: FileEntity): Promise<UserEntity> {
     return await this.userRepository.updateAvatar(userId, avatar);
+  }
+
+  async subscribe(userId: number, subscriberId: number): Promise<UserEntity> {
+    const subscriberEntity: UserEntity =
+      await this.findByIdWithRelations(subscriberId);
+    const userEntity: UserEntity = await this.findByIdWithRelations(userId);
+    if (
+      subscriberEntity?.subscriptions?.find(
+        (subscription: UserEntity): boolean =>
+          subscription.id === userEntity.id,
+      )
+    ) {
+      throw new ConflictException(
+        'The user is already subscribed to this user',
+      );
+    }
+    if (subscriberEntity?.subscriptions) {
+      subscriberEntity.subscriptions.push(userEntity);
+    } else {
+      subscriberEntity.subscriptions = [userEntity];
+    }
+    return await this.userRepository.updateSubscriptions(
+      subscriberEntity.id,
+      subscriberEntity.subscriptions,
+    );
+  }
+
+  async unsubscribe(userId: number, subscriberId: number): Promise<UserEntity> {
+    const subscriberEntity: UserEntity =
+      await this.findByIdWithRelations(subscriberId);
+    const userEntity: UserEntity = await this.findByIdWithRelations(userId);
+    if (
+      !subscriberEntity?.subscriptions?.find(
+        (subscription: UserEntity): boolean =>
+          subscription.id === userEntity.id,
+      )
+    ) {
+      throw new NotFoundException('The user is not subscribed to this user');
+    }
+    subscriberEntity.subscriptions = subscriberEntity.subscriptions.filter(
+      (subscription: UserEntity): boolean => subscription.id !== userEntity.id,
+    );
+    return await this.userRepository.updateSubscriptions(
+      subscriberEntity.id,
+      subscriberEntity.subscriptions,
+    );
   }
 }

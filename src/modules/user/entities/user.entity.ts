@@ -4,6 +4,8 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany, OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -83,4 +85,18 @@ export class UserEntity {
 
   @Column('int', { nullable: true, default: null })
   avatarId: number;
+
+  @ManyToMany(() => UserEntity)
+  @JoinTable({
+    name: 'user_subscription',
+    joinColumn: {
+      name: 'userId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'followerId',
+      referencedColumnName: 'id',
+    },
+  })
+  subscriptions: UserEntity[];
 }

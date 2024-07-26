@@ -114,9 +114,45 @@ export class UserController {
     return this.userService.uploadAvatar(avatarFile, context.userId);
   }
 
+  @ApiOkResponse({
+    type: UserSchema,
+  })
+  @UseInterceptors(new TransformInterceptor(UserSchema))
+  @Post('/:id/subscribe')
+  @UseGuards(JwtAuthGuard)
+  subscribe(
+    @Param('id', ParseIntPipe) userId: number,
+    @Context() context: ContextDto,
+  ): Promise<UserEntity> {
+    this.checkNotEqualIds(userId, context.userId);
+    return this.userService.subscribe(userId, context.userId);
+  }
+
+  @ApiOkResponse({
+    type: UserSchema,
+  })
+  @UseInterceptors(new TransformInterceptor(UserSchema))
+  @Delete('/:id/subscribe')
+  @UseGuards(JwtAuthGuard)
+  unsubscribe(
+    @Param('id', ParseIntPipe) userId: number,
+    @Context() context: ContextDto,
+  ): Promise<UserEntity> {
+    this.checkNotEqualIds(userId, context.userId);
+    return this.userService.unsubscribe(userId, context.userId);
+  }
+
   checkPermission(idFromDto: number, idFromContext: number): void {
     if (idFromDto !== idFromContext) {
       throw new ForbiddenException('Forbidden resource');
+    }
+  }
+
+  checkNotEqualIds(userId: number, followerId: number): void {
+    if (userId === followerId) {
+      throw new BadRequestException(
+        'Id of whom to subscribe to is equal to the id of the subscriber',
+      );
     }
   }
 }
