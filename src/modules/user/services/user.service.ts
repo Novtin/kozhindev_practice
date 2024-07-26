@@ -92,21 +92,20 @@ export class UserService {
   }
 
   async uploadAvatar(
-    avatar: Express.Multer.File,
+    avatarFile: Express.Multer.File,
     userId: number,
   ): Promise<UserEntity> {
-    const userFromDB: UserEntity = await this.findById(userId);
-    const fileIdForDel: number = userFromDB.avatarId;
-    const newFile: FileEntity = await this.fileService.create(avatar);
-    userFromDB.avatar = newFile;
-    const updatedUser: UserEntity = await this.updateAvatar(userFromDB);
-    if (fileIdForDel) {
-      await this.fileService.deleteById(fileIdForDel);
+    let userEntity: UserEntity = await this.findById(userId);
+    const fileIdForDelete: number = userEntity.avatarId;
+    userEntity.avatar = await this.fileService.create(avatarFile);
+    userEntity = await this.updateAvatar(userEntity.id, userEntity.avatar);
+    if (fileIdForDelete) {
+      await this.fileService.deleteById(fileIdForDelete);
     }
-    return updatedUser;
+    return userEntity;
   }
 
-  private async updateAvatar(userEntity: UserEntity): Promise<UserEntity> {
-    return await this.userRepository.updateAvatar(userEntity);
+  private async updateAvatar(userId: number, avatar: FileEntity): Promise<UserEntity> {
+    return await this.userRepository.updateAvatar(userId, avatar);
   }
 }

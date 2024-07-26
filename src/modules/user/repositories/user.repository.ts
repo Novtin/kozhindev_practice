@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { UpdateUserDto } from '../dtos/update-user.dto';
+import { FileEntity } from '../../file/entities/file.entity';
 
 export class UserRepository {
   constructor(
@@ -116,11 +117,9 @@ export class UserRepository {
     return await this.findByIdWithRelations(updateUserDto.id);
   }
 
-  async updateAvatar(userEntity: UserEntity): Promise<UserEntity> {
-    await this.dbRepository.update(userEntity.id, {
-      avatar: userEntity.avatar,
-    });
-    return await this.findByIdWithRelations(userEntity.id);
+  async updateAvatar(id: number, avatar: FileEntity): Promise<UserEntity> {
+    await this.dbRepository.update(id, { avatar });
+    return await this.findByIdWithRelations(id);
   }
 
   async deleteById(id: number): Promise<void> {
