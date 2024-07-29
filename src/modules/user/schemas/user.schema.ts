@@ -6,7 +6,7 @@ import { UserSubscriptionSchema } from './user-subscription.schema';
 export class UserSchema {
   @ApiProperty({
     type: Number,
-    description: 'Имя',
+    description: 'Идентификатор пользователя',
     required: true,
   })
   @Expose()

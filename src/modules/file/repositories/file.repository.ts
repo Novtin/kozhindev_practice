@@ -7,24 +7,24 @@ import { Injectable } from '@nestjs/common';
 export class FileRepository {
   constructor(
     @InjectRepository(FileEntity)
-    private readonly fileRepository: Repository<FileEntity>,
+    private readonly dbRepository: Repository<FileEntity>,
   ) {}
 
   async findById(id: number): Promise<FileEntity> {
-    return this.fileRepository.findOneBy({ id });
+    return this.dbRepository.findOneBy({ id });
   }
 
   async existById(id: number): Promise<boolean> {
-    return this.fileRepository.existsBy({ id });
+    return this.dbRepository.existsBy({ id });
   }
 
   async create<T extends DeepPartial<FileEntity>>(
     entity: T,
   ): Promise<FileEntity> {
-    return this.fileRepository.save(entity);
+    return this.dbRepository.save(entity);
   }
 
   async deleteById(id: number): Promise<void> {
-    await this.fileRepository.delete({ id });
+    await this.dbRepository.delete({ id });
   }
 }

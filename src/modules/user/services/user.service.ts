@@ -109,7 +109,10 @@ export class UserService {
     return userEntity;
   }
 
-  private async updateAvatar(userId: number, avatar: FileEntity): Promise<UserEntity> {
+  private async updateAvatar(
+    userId: number,
+    avatar: FileEntity,
+  ): Promise<UserEntity> {
     return await this.userRepository.updateAvatar(userId, avatar);
   }
 

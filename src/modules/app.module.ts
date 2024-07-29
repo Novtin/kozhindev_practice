@@ -9,6 +9,7 @@ import httpConfig from '../config/http.config';
 import { FileModule } from './file/file.module';
 import fileConfig from '../config/file.config';
 import paginationConfig from '../config/pagination.config';
+import { PostModule } from './post/post.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import paginationConfig from '../config/pagination.config';
     AuthModule,
     UserModule,
     FileModule,
+    PostModule,
   ],
   controllers: [],
   providers: [],

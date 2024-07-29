@@ -12,7 +12,7 @@ import { UniqueUserNicknameForUpdateValidator } from '../validators/unique-user-
 
 export class UpdateUserDto {
   @ApiProperty({
-    type: String,
+    type: Number,
     description: 'Идентификатор пользователя',
     required: true,
   })
