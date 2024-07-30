@@ -6,10 +6,19 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostEntity } from './entities/post.entity';
 import { UserModule } from '../user/user.module';
 import { AuthModule } from '../auth/auth.module';
+import { PostLikeRepository } from './repositories/post-like.repository';
+import { PostLikeService } from './services/post-like.service';
+import { PostLikeEntity } from './entities/post-like.entity';
+import { FileModule } from '../file/file.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PostEntity]), UserModule, AuthModule],
-  providers: [PostRepository, PostService],
+  imports: [
+    TypeOrmModule.forFeature([PostEntity, PostLikeEntity]),
+    UserModule,
+    AuthModule,
+    FileModule,
+  ],
+  providers: [PostRepository, PostService, PostLikeRepository, PostLikeService],
   controllers: [PostController],
 })
 export class PostModule {}

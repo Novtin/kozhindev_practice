@@ -5,12 +5,18 @@ import { UpdatePostDto } from '../dtos/update-post.dto';
 import { CreatePostDto } from '../dtos/create-post.dto';
 import { PaginationDto } from '../../../common/dtos/pagination.dto';
 import { ConfigService } from '@nestjs/config';
+import { FileService } from '../../file/services/file.service';
+import { FileEntity } from '../../file/entities/file.entity';
+import { UserService } from '../../user/services/user.service';
+import { UserEntity } from '../../user/entities/user.entity';
 
 @Injectable()
 export class PostService {
   constructor(
-    private readonly postRepository: PostRepository,
     private readonly configService: ConfigService,
+    private readonly postRepository: PostRepository,
+    private readonly fileService: FileService,
+    private readonly userService: UserService,
   ) {}
 
   async findByIdWithRelations(id: number): Promise<PostEntity> {
@@ -31,6 +37,22 @@ export class PostService {
     return this.postRepository.findByCriteria(limit, page);
   }
 
+  async findByUserId(userId: number): Promise<PostEntity[]> {
+    return this.postRepository.findByUserId(userId);
+  }
+
+  async findFromSubscriptions(userId: number): Promise<PostEntity[]> {
+    const userEntity: UserEntity =
+      await this.userService.findByIdWithRelations(userId);
+    const postsFromSubscriptions: PostEntity[] = [];
+    for (const subscription of userEntity.subscriptions) {
+      postsFromSubscriptions.push(
+        ...(await this.findByUserId(subscription.id)),
+      );
+    }
+    return postsFromSubscriptions;
+  }
+
   async create(createDto: CreatePostDto): Promise<PostEntity> {
     return this.postRepository.create(createDto);
   }
@@ -43,6 +65,28 @@ export class PostService {
   async deleteById(id: number): Promise<void> {
     await this.throwExceptionIfNotExistById(id);
     return this.postRepository.deleteById(id);
+  }
+
+  async uploadImage(
+    imageFile: Express.Multer.File,
+    postId: number,
+  ): Promise<PostEntity> {
+    await this.throwExceptionIfNotExistById(postId);
+    let postEntity: PostEntity = await this.findById(postId);
+    const fileIdForDelete: number = postEntity.imageId;
+    postEntity.image = await this.fileService.create(imageFile);
+    postEntity = await this.updateImage(postEntity.id, postEntity.image);
+    if (fileIdForDelete) {
+      await this.fileService.deleteById(fileIdForDelete);
+    }
+    return postEntity;
+  }
+
+  private async updateImage(
+    postId: number,
+    image: FileEntity,
+  ): Promise<PostEntity> {
+    return await this.postRepository.updateImage(postId, image);
   }
 
   async throwExceptionIfNotExistById(id: number): Promise<void> {

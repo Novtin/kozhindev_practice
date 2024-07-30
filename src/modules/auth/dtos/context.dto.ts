@@ -1,15 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsInt, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class ContextDto {
   @ApiProperty({
-    type: String,
+    type: Number,
     description: 'Идентификатор пользователя',
     required: true,
   })
-  @IsString()
-  @Type(() => String)
+  @IsInt()
+  @Type(() => Number)
   userId: number;
 
   @ApiProperty({

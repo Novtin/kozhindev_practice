@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Expose, Type } from 'class-transformer';
-import { FileSchema } from '../../file/schemas/file.schema';
+import { Expose, Transform, Type } from 'class-transformer';
 import { UserSchema } from '../../user/schemas/user.schema';
+import { FileSchema } from '../../file/schemas/file.schema';
 
 export class PostSchema {
   @ApiProperty({
@@ -30,6 +30,16 @@ export class PostSchema {
   @Expose()
   @Type(() => String)
   text: string;
+
+  @ApiProperty({
+    type: Number,
+    description: 'Количество лайков',
+    required: true,
+  })
+  @Expose({ name: 'likes' })
+  @Type(() => Number)
+  @Transform(({ value }) => value.length, { toClassOnly: true })
+  likesCount: number;
 
   @ApiProperty({
     type: UserSchema,

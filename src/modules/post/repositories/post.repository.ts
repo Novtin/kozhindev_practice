@@ -3,6 +3,7 @@ import { DeepPartial, Repository } from 'typeorm';
 import { PostEntity } from '../entities/post.entity';
 import { UpdatePostDto } from '../dtos/update-post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FileEntity } from '../../file/entities/file.entity';
 
 @Injectable()
 export class PostRepository {
@@ -15,7 +16,7 @@ export class PostRepository {
   }
 
   async findByCriteria(take: number, skip: number): Promise<PostEntity[]> {
-    return this.dbRepository.find({ take, skip, relations: ['image', 'user', 'user.avatar'] });
+    return this.dbRepository.find({ take, skip, relations: ['image', 'user', 'user.avatar', 'likes'] });
   }
 
   async existById(id: number): Promise<boolean> {
@@ -42,10 +43,23 @@ export class PostRepository {
     });
     return await this.findByIdWithRelations(id);
   }
+
+  async updateImage(id: number, image: FileEntity): Promise<PostEntity> {
+    await this.dbRepository.update(id, { image });
+    return await this.findByIdWithRelations(id);
+  }
+
   async findByIdWithRelations(id: number): Promise<PostEntity> {
     return this.dbRepository.findOne({
       where: { id: id },
-      relations: ['image', 'user', 'user.avatar'],
+      relations: ['image', 'user', 'likes', 'user.avatar'],
+    });
+  }
+
+  async findByUserId(userId: number): Promise<PostEntity[]> {
+    return this.dbRepository.find({
+      where: { userId },
+      relations: ['image', 'user', 'likes', 'user.avatar'],
     });
   }
 }

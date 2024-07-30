@@ -6,11 +6,13 @@ import {
   JoinColumn,
   JoinTable,
   ManyToMany,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { FileEntity } from '../../file/entities/file.entity';
+import { PostLikeEntity } from '../../post/entities/post-like.entity';
 
 @Entity({ name: 'user' })
 export class UserEntity {
@@ -99,4 +101,10 @@ export class UserEntity {
     name: 'deletedAt',
   })
   deletedAt: Date;
+
+  @OneToMany(
+    () => PostLikeEntity,
+    (postLikeEntity: PostLikeEntity) => postLikeEntity.user,
+  )
+  likes: PostLikeEntity[];
 }
