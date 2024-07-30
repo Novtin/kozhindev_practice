@@ -8,8 +8,9 @@ import {
   Param,
   ParseIntPipe,
   Patch,
-  Post, Query,
+  Post,
   UploadedFile,
+  Query,
   UseGuards,
   UseInterceptors,
   UsePipes,
@@ -25,10 +26,10 @@ import { Context } from '../../auth/decorators/context.decorator';
 import { ContextDto } from '../../auth/dtos/context.dto';
 import { UpdatePostDto } from '../dtos/update-post.dto';
 import { CreatePostDto } from '../dtos/create-post.dto';
-import { PaginationDto } from '../../../common/dtos/pagination.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerImageOptions } from '../../../config/multer-image.config';
 import { PostLikeService } from '../services/post-like.service';
+import { PaginationDto } from '../../../common/dtos/pagination.dto';
 
 @ApiTags('post')
 @Controller('post')
