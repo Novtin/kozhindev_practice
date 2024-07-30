@@ -17,8 +17,8 @@ import { TagService } from '../../tag/services/tag.service';
 @Injectable()
 export class PostService {
   constructor(
-    private readonly configService: ConfigService,
     private readonly postRepository: PostRepository,
+    private readonly configService: ConfigService,
     private readonly fileService: FileService,
     private readonly userService: UserService,
     private readonly tagService: TagService,

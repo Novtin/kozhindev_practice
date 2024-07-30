@@ -87,6 +87,12 @@ export class UserEntity {
   })
   subscriptions: UserEntity[];
 
+  @OneToMany(
+    () => PostLikeEntity,
+    (postLikeEntity: PostLikeEntity) => postLikeEntity.user,
+  )
+  likes: PostLikeEntity[];
+
   @CreateDateColumn({
     name: 'createdAt',
   })
