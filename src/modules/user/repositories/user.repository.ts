@@ -52,7 +52,7 @@ export class UserRepository {
   async findByIdWithRelations(id: number): Promise<UserEntity> {
     return this.dbRepository.findOne({
       where: { id: id },
-      relations: ['avatar', 'subscriptions'],
+      relations: ['avatar', 'subscriptions', 'subscriptions.avatar'],
     });
   }
 
@@ -91,7 +91,7 @@ export class UserRepository {
       where,
       take,
       skip,
-      relations: ['avatar', 'subscriptions'],
+      relations: ['avatar', 'subscriptions', 'subscriptions.avatar'],
     });
     return users;
   }
