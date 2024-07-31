@@ -3,10 +3,15 @@ import { PostRepository } from '../repositories/post.repository';
 import { PostEntity } from '../entities/post.entity';
 import { UpdatePostDto } from '../dtos/update-post.dto';
 import { CreatePostDto } from '../dtos/create-post.dto';
+import { PaginationDto } from '../../../common/dtos/pagination.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PostService {
-  constructor(private readonly postRepository: PostRepository) {}
+  constructor(
+    private readonly postRepository: PostRepository,
+    private readonly configService: ConfigService,
+  ) {}
 
   async findByIdWithRelations(id: number): Promise<PostEntity> {
     await this.throwExceptionIfNotExistById(id);
@@ -18,8 +23,12 @@ export class PostService {
     return this.postRepository.findById(id);
   }
 
-  async findAll(): Promise<PostEntity[]> {
-    return this.postRepository.findAll();
+  async findByCriteria(paginationDto: PaginationDto): Promise<PostEntity[]> {
+    const {
+      page = 0,
+      limit = this.configService.get('pagination.defaultLimit'),
+    } = paginationDto;
+    return this.postRepository.findByCriteria(limit, page);
   }
 
   async create(createDto: CreatePostDto): Promise<PostEntity> {

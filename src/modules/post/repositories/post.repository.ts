@@ -14,8 +14,8 @@ export class PostRepository {
     return this.dbRepository.findOneBy({ id });
   }
 
-  async findAll(): Promise<PostEntity[]> {
-    return this.dbRepository.find({ relations: ['image', 'user'] });
+  async findByCriteria(take: number, skip: number): Promise<PostEntity[]> {
+    return this.dbRepository.find({ take, skip, relations: ['image', 'user', 'user.avatar'] });
   }
 
   async existById(id: number): Promise<boolean> {
@@ -45,7 +45,7 @@ export class PostRepository {
   async findByIdWithRelations(id: number): Promise<PostEntity> {
     return this.dbRepository.findOne({
       where: { id: id },
-      relations: ['image', 'user'],
+      relations: ['image', 'user', 'user.avatar'],
     });
   }
 }

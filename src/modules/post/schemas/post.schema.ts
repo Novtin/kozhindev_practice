@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { UserSchema } from '../../user/schemas/user.schema';
 import { FileSchema } from '../../file/schemas/file.schema';
+import { UserSchema } from '../../user/schemas/user.schema';
 
 export class PostSchema {
   @ApiProperty({

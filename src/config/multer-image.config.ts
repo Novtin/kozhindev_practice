@@ -1,6 +1,4 @@
-import { registerAs } from '@nestjs/config';
 import { diskStorage } from 'multer';
-import { MulterModuleOptions } from '@nestjs/platform-express';
 import * as uuid from 'uuid';
 import { extname, join } from 'path';
 import * as process from 'process';

@@ -25,7 +25,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { Context } from '../../auth/decorators/context.decorator';
 import { CriteriaUserDto } from '../dtos/criteria-user.dto';
 import { TransformInterceptor } from '../../../common/interceptors/transform.interceptor';
-import { UserSchema } from '../schemas/user.schema';
+import { UserDetailSchema } from '../schemas/user-detail.schema';
 import { ContextDto } from '../../auth/dtos/context.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerImageOptions } from '../../../config/multer-image.config';
@@ -37,19 +37,19 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiOkResponse({
-    type: UserSchema,
+    type: UserDetailSchema,
   })
-  @UseInterceptors(new TransformInterceptor(UserSchema))
+  @UseInterceptors(new TransformInterceptor(UserDetailSchema))
   @Get(':id')
   findById(@Param('id', ParseIntPipe) userId: number): Promise<UserEntity> {
     return this.userService.findByIdWithRelations(userId);
   }
 
   @ApiOkResponse({
-    type: UserSchema,
+    type: UserDetailSchema,
     isArray: true,
   })
-  @UseInterceptors(new TransformInterceptor(UserSchema))
+  @UseInterceptors(new TransformInterceptor(UserDetailSchema))
   @Get()
   findByCriteria(
     @Query() criteriaUserDto: CriteriaUserDto,
@@ -58,9 +58,9 @@ export class UserController {
   }
 
   @ApiOkResponse({
-    type: UserSchema,
+    type: UserDetailSchema,
   })
-  @UseInterceptors(new TransformInterceptor(UserSchema))
+  @UseInterceptors(new TransformInterceptor(UserDetailSchema))
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(
@@ -85,7 +85,7 @@ export class UserController {
   }
 
   @ApiOkResponse({
-    type: UserSchema,
+    type: UserDetailSchema,
   })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -102,7 +102,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('avatarFile', multerImageOptions),
-    new TransformInterceptor(UserSchema),
+    new TransformInterceptor(UserDetailSchema),
   )
   uploadAvatar(
     @UploadedFile() avatarFile: Express.Multer.File,
@@ -115,9 +115,9 @@ export class UserController {
   }
 
   @ApiOkResponse({
-    type: UserSchema,
+    type: UserDetailSchema,
   })
-  @UseInterceptors(new TransformInterceptor(UserSchema))
+  @UseInterceptors(new TransformInterceptor(UserDetailSchema))
   @Post('/:id/subscribe')
   @UseGuards(JwtAuthGuard)
   subscribe(
@@ -129,9 +129,9 @@ export class UserController {
   }
 
   @ApiOkResponse({
-    type: UserSchema,
+    type: UserDetailSchema,
   })
-  @UseInterceptors(new TransformInterceptor(UserSchema))
+  @UseInterceptors(new TransformInterceptor(UserDetailSchema))
   @Delete('/:id/subscribe')
   @UseGuards(JwtAuthGuard)
   unsubscribe(

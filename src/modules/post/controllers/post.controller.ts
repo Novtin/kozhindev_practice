@@ -7,7 +7,7 @@ import {
   Param,
   ParseIntPipe,
   Patch,
-  Post,
+  Post, Query,
   UseGuards,
   UseInterceptors,
   UsePipes,
@@ -23,6 +23,7 @@ import { Context } from '../../auth/decorators/context.decorator';
 import { ContextDto } from '../../auth/dtos/context.dto';
 import { UpdatePostDto } from '../dtos/update-post.dto';
 import { CreatePostDto } from '../dtos/create-post.dto';
+import { PaginationDto } from '../../../common/dtos/pagination.dto';
 
 @ApiTags('post')
 @Controller('post')
@@ -44,8 +45,8 @@ export class PostController {
   })
   @UseInterceptors(new TransformInterceptor(PostSchema))
   @Get()
-  findAll(): Promise<PostEntity[]> {
-    return this.postService.findAll();
+  findByCriteria(@Query() paginationDto: PaginationDto): Promise<PostEntity[]> {
+    return this.postService.findByCriteria(paginationDto);
   }
 
   @ApiOkResponse()

@@ -1,8 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
 import { FileSchema } from '../../file/schemas/file.schema';
+import { UserSchema } from './user.schema';
 
-export class UserSubscriptionSchema {
+export class UserDetailSchema {
   @ApiProperty({
     type: Number,
     description: 'Идентификатор пользователя',
@@ -83,4 +84,14 @@ export class UserSubscriptionSchema {
   @Expose()
   @Type(() => FileSchema)
   avatar: FileSchema;
+
+  @ApiProperty({
+    type: UserSchema,
+    isArray: true,
+    description: 'Подписки пользователя',
+    required: true,
+  })
+  @Expose()
+  @Type(() => UserSchema)
+  subscriptions: UserSchema[];
 }

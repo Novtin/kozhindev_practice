@@ -14,7 +14,7 @@ import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { JwtDto } from '../dtos/jwt.dto';
 import { UserEntity } from '../../user/entities/user.entity';
 import { TransformInterceptor } from '../../../common/interceptors/transform.interceptor';
-import { UserSchema } from '../../user/schemas/user.schema';
+import { UserDetailSchema } from '../../user/schemas/user-detail.schema';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -31,9 +31,9 @@ export class AuthController {
   }
 
   @ApiOkResponse({
-    type: UserSchema,
+    type: UserDetailSchema,
   })
-  @UseInterceptors(new TransformInterceptor(UserSchema))
+  @UseInterceptors(new TransformInterceptor(UserDetailSchema))
   @Post('register')
   register(@Body() registerDto: RegisterDto): Promise<UserEntity> {
     return this.authService.register(registerDto);
