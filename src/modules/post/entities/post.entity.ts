@@ -3,7 +3,8 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinColumn,
+  JoinColumn, JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -13,6 +14,7 @@ import {
 import { UserEntity } from '../../user/entities/user.entity';
 import { FileEntity } from '../../file/entities/file.entity';
 import { PostLikeEntity } from './post-like.entity';
+import { TagEntity } from '../../tag/entities/tag.entity';
 
 @Entity({ name: 'post' })
 export class PostEntity {
@@ -74,4 +76,18 @@ export class PostEntity {
     (postLikeEntity: PostLikeEntity) => postLikeEntity.post,
   )
   likes: PostLikeEntity[];
+
+  @ManyToMany(() => TagEntity, (tagEntity: TagEntity) => tagEntity.posts)
+  @JoinTable({
+    name: 'post_with_tag',
+    joinColumn: {
+      name: 'postId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'tagId',
+      referencedColumnName: 'id',
+    },
+  })
+  tags: TagEntity[];
 }

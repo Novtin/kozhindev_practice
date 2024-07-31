@@ -97,23 +97,7 @@ export class UserRepository {
   }
 
   async update(updateUserDto: UpdateUserDto): Promise<UserEntity> {
-    const {
-      id,
-      nickname,
-      firstName,
-      surname,
-      description,
-      passwordHash,
-      email,
-    } = updateUserDto;
-    await this.dbRepository.update(id, {
-      nickname,
-      firstName,
-      surname,
-      description,
-      passwordHash,
-      email,
-    });
+    await this.dbRepository.update(updateUserDto.id, updateUserDto);
     return await this.findByIdWithRelations(updateUserDto.id);
   }
 

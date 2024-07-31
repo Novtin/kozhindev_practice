@@ -10,6 +10,7 @@ import { PostLikeRepository } from './repositories/post-like.repository';
 import { PostLikeService } from './services/post-like.service';
 import { PostLikeEntity } from './entities/post-like.entity';
 import { FileModule } from '../file/file.module';
+import { TagModule } from '../tag/tag.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { FileModule } from '../file/file.module';
     UserModule,
     AuthModule,
     FileModule,
+    TagModule,
   ],
   providers: [PostRepository, PostService, PostLikeRepository, PostLikeService],
   controllers: [PostController],

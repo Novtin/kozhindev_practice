@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  UsePipes,
-  ValidationPipe,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Controller, Post, Body, UseInterceptors } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { LoginDto } from '../dtos/login.dto';
 import { RegisterDto } from '../dtos/register.dto';
@@ -18,7 +11,6 @@ import { UserDetailSchema } from '../../user/schemas/user-detail.schema';
 
 @ApiTags('auth')
 @Controller('auth')
-@UsePipes(ValidationPipe)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 

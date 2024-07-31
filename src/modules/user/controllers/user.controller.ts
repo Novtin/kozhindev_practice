@@ -1,8 +1,6 @@
 import {
   Controller,
   Body,
-  UsePipes,
-  ValidationPipe,
   Param,
   Get,
   Delete,
@@ -32,7 +30,6 @@ import { multerImageOptions } from '../../../config/multer-image.config';
 
 @ApiTags('user')
 @Controller('user')
-@UsePipes(new ValidationPipe({ transform: true }))
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

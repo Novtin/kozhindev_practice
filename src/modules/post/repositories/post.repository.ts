@@ -4,6 +4,7 @@ import { PostEntity } from '../entities/post.entity';
 import { UpdatePostDto } from '../dtos/update-post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FileEntity } from '../../file/entities/file.entity';
+import { TagEntity } from '../../tag/entities/tag.entity';
 
 @Injectable()
 export class PostRepository {
@@ -16,7 +17,7 @@ export class PostRepository {
   }
 
   async findByCriteria(take: number, skip: number): Promise<PostEntity[]> {
-    return this.dbRepository.find({ take, skip, relations: ['image', 'user', 'user.avatar', 'likes'] });
+    return this.dbRepository.find({ take, skip, relations: ['image', 'user', 'user.avatar', 'likes', 'tags'] });
   }
 
   async existById(id: number): Promise<boolean> {
@@ -36,12 +37,8 @@ export class PostRepository {
   }
 
   async update(updatePostDto: UpdatePostDto): Promise<PostEntity> {
-    const { id, title, text } = updatePostDto;
-    await this.dbRepository.update(id, {
-      title,
-      text,
-    });
-    return await this.findByIdWithRelations(id);
+    await this.dbRepository.update(updatePostDto.id, updatePostDto);
+    return await this.findByIdWithRelations(updatePostDto.id);
   }
 
   async updateImage(id: number, image: FileEntity): Promise<PostEntity> {
@@ -49,17 +46,22 @@ export class PostRepository {
     return await this.findByIdWithRelations(id);
   }
 
+  async updateTags(id: number, tags: TagEntity[]): Promise<PostEntity> {
+    await this.dbRepository.save({ id, tags });
+    return await this.findByIdWithRelations(id);
+  }
+
   async findByIdWithRelations(id: number): Promise<PostEntity> {
     return this.dbRepository.findOne({
       where: { id: id },
-      relations: ['image', 'user', 'likes', 'user.avatar'],
+      relations: ['image', 'user', 'likes', 'user.avatar', 'tags'],
     });
   }
 
   async findByUserId(userId: number): Promise<PostEntity[]> {
     return this.dbRepository.find({
       where: { userId },
-      relations: ['image', 'user', 'likes', 'user.avatar'],
+      relations: ['image', 'user', 'likes', 'user.avatar', 'tags'],
     });
   }
 }

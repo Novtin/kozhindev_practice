@@ -4,8 +4,6 @@ import {
   Param,
   ParseIntPipe,
   UseInterceptors,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { FileService } from '../services/file.service';
@@ -15,7 +13,6 @@ import { TransformInterceptor } from '../../../common/interceptors/transform.int
 
 @ApiTags('file')
 @Controller('file')
-@UsePipes(ValidationPipe)
 export class FileController {
   constructor(private readonly fileService: FileService) {}
 

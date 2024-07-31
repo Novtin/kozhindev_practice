@@ -9,6 +9,7 @@ import { FileService } from '../../file/services/file.service';
 import { FileEntity } from '../../file/entities/file.entity';
 import { UserService } from '../../user/services/user.service';
 import { UserEntity } from '../../user/entities/user.entity';
+import { TagEntity } from '../../tag/entities/tag.entity';
 
 @Injectable()
 export class PostService {
@@ -87,6 +88,10 @@ export class PostService {
     image: FileEntity,
   ): Promise<PostEntity> {
     return await this.postRepository.updateImage(postId, image);
+  }
+
+  async updateTags(postId: number, tags: TagEntity[]): Promise<PostEntity> {
+    return await this.postRepository.updateTags(postId, tags);
   }
 
   async throwExceptionIfNotExistById(id: number): Promise<void> {

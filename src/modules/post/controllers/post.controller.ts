@@ -13,8 +13,6 @@ import {
   Query,
   UseGuards,
   UseInterceptors,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { ApiBody, ApiConsumes, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { TransformInterceptor } from '../../../common/interceptors/transform.interceptor';
@@ -30,14 +28,18 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { multerImageOptions } from '../../../config/multer-image.config';
 import { PostLikeService } from '../services/post-like.service';
 import { PaginationDto } from '../../../common/dtos/pagination.dto';
+import { TagDto } from '../../tag/dtos/tag.dto';
+import { TagService } from '../../tag/services/tag.service';
+import { TagEntity } from '../../tag/entities/tag.entity';
+import { PostTagsDto } from '../../tag/dtos/post-tags.dto';
 
 @ApiTags('post')
 @Controller('post')
-@UsePipes(new ValidationPipe({ transform: true }))
 export class PostController {
   constructor(
     private readonly postService: PostService,
     private readonly postLikeService: PostLikeService,
+    private readonly tagService: TagService,
   ) {}
 
   @ApiOkResponse({
@@ -101,12 +103,20 @@ export class PostController {
   @UseInterceptors(new TransformInterceptor(PostSchema))
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(
+  async create(
     @Body() createPostDto: CreatePostDto,
+    @Body() postTagsDto: PostTagsDto,
     @Context() context: ContextDto,
   ): Promise<PostEntity> {
     createPostDto.userId = context.userId;
-    return this.postService.create(createPostDto);
+    const postEntity: PostEntity = await this.postService.create(createPostDto);
+    postEntity.tags = await Promise.all(
+      postTagsDto.tags.map(
+        async (tagDto: TagDto): Promise<TagEntity> =>
+          await this.tagService.createIfNotExist(tagDto),
+      ),
+    );
+    return this.postService.updateTags(postEntity.id, postEntity.tags);
   }
 
   @ApiOkResponse({
