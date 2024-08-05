@@ -1,17 +1,19 @@
 import {
   Column,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
-import { AbstractDateEntity } from '../../../common/entities/abstract-date.entity';
 import { UserEntity } from '../../user/entities/user.entity';
 import { FileEntity } from '../../file/entities/file.entity';
 
 @Entity({ name: 'post' })
-export class PostEntity extends AbstractDateEntity {
+export class PostEntity {
   @PrimaryGeneratedColumn('identity', {
     comment: 'Идентификатор поста',
     name: 'id',
@@ -49,4 +51,19 @@ export class PostEntity extends AbstractDateEntity {
 
   @Column('int', { nullable: true, default: null })
   imageId: number;
+
+  @CreateDateColumn({
+    name: 'createdAt',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    name: 'updatedAt',
+  })
+  updatedAt: Date;
+
+  @DeleteDateColumn({
+    name: 'deletedAt',
+  })
+  deletedAt: Date;
 }

@@ -1,17 +1,19 @@
 import {
   Column,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   JoinTable,
   ManyToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { FileEntity } from '../../file/entities/file.entity';
-import { AbstractDateEntity } from '../../../common/entities/abstract-date.entity';
 
 @Entity({ name: 'user' })
-export class UserEntity extends AbstractDateEntity {
+export class UserEntity {
   @PrimaryGeneratedColumn('identity', {
     comment: 'Идентификатор пользователя',
     name: 'id',
@@ -82,4 +84,19 @@ export class UserEntity extends AbstractDateEntity {
     },
   })
   subscriptions: UserEntity[];
+
+  @CreateDateColumn({
+    name: 'createdAt',
+  })
+  createdAt: Date;
+
+  @UpdateDateColumn({
+    name: 'updatedAt',
+  })
+  updatedAt: Date;
+
+  @DeleteDateColumn({
+    name: 'deletedAt',
+  })
+  deletedAt: Date;
 }
