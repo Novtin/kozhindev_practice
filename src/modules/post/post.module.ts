@@ -11,16 +11,26 @@ import { PostLikeService } from './services/post-like.service';
 import { PostLikeEntity } from './entities/post-like.entity';
 import { FileModule } from '../file/file.module';
 import { TagModule } from '../tag/tag.module';
+import { PostCommentService } from './services/post-comment.service';
+import { PostCommentRepository } from './repositories/post-comment.repository';
+import { PostCommentEntity } from './entities/post-comment.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([PostEntity, PostLikeEntity]),
+    TypeOrmModule.forFeature([PostEntity, PostLikeEntity, PostCommentEntity]),
     UserModule,
     AuthModule,
     FileModule,
     TagModule,
   ],
-  providers: [PostRepository, PostService, PostLikeRepository, PostLikeService],
+  providers: [
+    PostRepository,
+    PostService,
+    PostLikeRepository,
+    PostLikeService,
+    PostCommentService,
+    PostCommentRepository,
+  ],
   controllers: [PostController],
 })
 export class PostModule {}

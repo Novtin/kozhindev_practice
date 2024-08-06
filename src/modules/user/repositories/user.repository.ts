@@ -15,7 +15,11 @@ export class UserRepository {
     @InjectRepository(UserEntity)
     private readonly dbRepository: Repository<UserEntity>,
   ) {}
-
+  private readonly RELATIONS: string[] = [
+    'avatar',
+    'subscriptions',
+    'subscriptions.avatar',
+  ];
   private readonly TWO_WORDS_IN_QUERY: number = 2;
   private readonly ONE_WORD_IN_QUERY: number = 1;
 
@@ -52,7 +56,7 @@ export class UserRepository {
   async findByIdWithRelations(id: number): Promise<UserEntity> {
     return this.dbRepository.findOne({
       where: { id: id },
-      relations: ['avatar', 'subscriptions', 'subscriptions.avatar'],
+      relations: this.RELATIONS,
     });
   }
 
@@ -91,7 +95,7 @@ export class UserRepository {
       where,
       take,
       skip,
-      relations: ['avatar', 'subscriptions', 'subscriptions.avatar'],
+      relations: this.RELATIONS,
     });
     return users;
   }

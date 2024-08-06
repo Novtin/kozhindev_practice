@@ -12,12 +12,26 @@ export class PostRepository {
     @InjectRepository(PostEntity)
     private readonly dbRepository: Repository<PostEntity>,
   ) {}
+  private readonly RELATIONS: string[] = [
+    'image',
+    'user',
+    'user.avatar',
+    'likes',
+    'tags',
+    'comments',
+    'comments.user',
+    'comments.user.avatar',
+  ];
   async findById(id: number): Promise<PostEntity> {
     return this.dbRepository.findOneBy({ id });
   }
 
   async findByCriteria(take: number, skip: number): Promise<PostEntity[]> {
-    return this.dbRepository.find({ take, skip, relations: ['image', 'user', 'user.avatar', 'likes', 'tags'] });
+    return this.dbRepository.find({
+      take,
+      skip,
+      relations: this.RELATIONS,
+    });
   }
 
   async existById(id: number): Promise<boolean> {
@@ -54,14 +68,14 @@ export class PostRepository {
   async findByIdWithRelations(id: number): Promise<PostEntity> {
     return this.dbRepository.findOne({
       where: { id: id },
-      relations: ['image', 'user', 'likes', 'user.avatar', 'tags'],
+      relations: this.RELATIONS,
     });
   }
 
   async findByUserId(userId: number): Promise<PostEntity[]> {
     return this.dbRepository.find({
       where: { userId },
-      relations: ['image', 'user', 'likes', 'user.avatar', 'tags'],
+      relations: this.RELATIONS,
     });
   }
 }

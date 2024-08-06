@@ -27,8 +27,14 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { multerImageOptions } from '../../../config/multer-image.config';
 import { PostLikeService } from '../services/post-like.service';
 import { PaginationDto } from '../../../common/dtos/pagination.dto';
-import { TagService } from '../../tag/services/tag.service';
 import { CreatePostDetailDto } from '../dtos/create-post-detail.dto';
+import { CreatePostComment } from '../types/create-post-comment';
+import { PostCommentService } from '../services/post-comment.service';
+import { PostCommentEntity } from '../entities/post-comment.entity';
+import { PostDetailSchema } from '../schemas/post-detail.schema';
+import { IdsPostComment } from '../types/ids-post-comment';
+import { PostCommentDto } from '../dtos/post-comment.dto';
+import { PostLike } from '../types/post-like';
 
 @ApiTags('post')
 @Controller('post')
@@ -36,7 +42,7 @@ export class PostController {
   constructor(
     private readonly postService: PostService,
     private readonly postLikeService: PostLikeService,
-    private readonly tagService: TagService,
+    private readonly postCommentService: PostCommentService,
   ) {}
 
   @ApiOkResponse({
@@ -50,9 +56,9 @@ export class PostController {
   }
 
   @ApiOkResponse({
-    type: PostSchema,
+    type: PostDetailSchema,
   })
-  @UseInterceptors(new TransformInterceptor(PostSchema))
+  @UseInterceptors(new TransformInterceptor(PostDetailSchema))
   @Get(':id')
   findById(@Param('id', ParseIntPipe) postId: number): Promise<PostEntity> {
     return this.postService.findByIdWithRelations(postId);
@@ -74,7 +80,7 @@ export class PostController {
     @Param('id', ParseIntPipe) postId: number,
     @Context() context: ContextDto,
   ): Promise<void> {
-    await this.checkPermission(postId, context.userId);
+    await this.checkPermissionForPost(postId, context.userId);
     return this.postService.deleteById(postId);
   }
 
@@ -90,7 +96,7 @@ export class PostController {
     @Context() context: ContextDto,
   ): Promise<PostEntity> {
     updatePostDto.id = postId;
-    await this.checkPermission(postId, context.userId);
+    await this.checkPermissionForPost(postId, context.userId);
     return this.postService.update(updatePostDto);
   }
 
@@ -109,7 +115,7 @@ export class PostController {
   }
 
   @ApiOkResponse({
-    type: PostSchema,
+    type: PostDetailSchema,
   })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -126,7 +132,7 @@ export class PostController {
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('imageFile', multerImageOptions),
-    new TransformInterceptor(PostSchema),
+    new TransformInterceptor(PostDetailSchema),
   )
   async uploadImage(
     @Param('id', ParseIntPipe) postId: number,
@@ -136,7 +142,7 @@ export class PostController {
     if (!imageFile) {
       throw new BadRequestException('File image is missing');
     }
-    await this.checkPermission(postId, context.userId);
+    await this.checkPermissionForPost(postId, context.userId);
     return this.postService.uploadImage(imageFile, postId);
   }
 
@@ -151,7 +157,7 @@ export class PostController {
     @Context() context: ContextDto,
   ): Promise<PostEntity> {
     await this.postService.throwExceptionIfNotExistById(postId);
-    const like: Like = { userId: context.userId, postId };
+    const like: PostLike = { userId: context.userId, postId };
     await this.postLikeService.setLike(like);
     return this.postService.findByIdWithRelations(postId);
   }
@@ -165,13 +171,90 @@ export class PostController {
     @Context() context: ContextDto,
   ): Promise<PostEntity> {
     await this.postService.throwExceptionIfNotExistById(postId);
-    const like: Like = { userId: context.userId, postId };
+    const like: PostLike = { userId: context.userId, postId };
     await this.postLikeService.removeLike(like);
     return this.postService.findByIdWithRelations(postId);
   }
 
-  async checkPermission(postId: number, userId: number): Promise<void> {
+  @ApiOkResponse({
+    type: PostDetailSchema,
+  })
+  @Post('/:postId/comment')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(new TransformInterceptor(PostDetailSchema))
+  async addComment(
+    @Param('postId', ParseIntPipe) postId: number,
+    @Body() commentDto: PostCommentDto,
+    @Context() context: ContextDto,
+  ): Promise<PostEntity> {
+    await this.postService.throwExceptionIfNotExistById(postId);
+    const comment: CreatePostComment = {
+      text: commentDto.text,
+      postId,
+      userId: context.userId,
+    };
+    const commentEntity: PostCommentEntity =
+      await this.postCommentService.create(comment);
+    return this.postService.findByIdWithRelations(commentEntity.postId);
+  }
+
+  @ApiOkResponse()
+  @Delete('/:postId/comment/:commentId')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(new TransformInterceptor(PostDetailSchema))
+  async removeComment(
+    @Param('postId', ParseIntPipe) postId: number,
+    @Param('commentId', ParseIntPipe) commentId: number,
+    @Context() context: ContextDto,
+  ): Promise<PostEntity> {
+    await this.postService.throwExceptionIfNotExistById(postId);
+    await this.checkPermissionForPostComment(commentId, context.userId);
+    const comment: IdsPostComment = {
+      id: commentId,
+      postId,
+      userId: context.userId,
+    };
+    await this.postCommentService.throwExceptionIfNotExist(comment);
+    await this.postCommentService.deleteById(commentId);
+    return this.postService.findByIdWithRelations(postId);
+  }
+
+  @ApiOkResponse({
+    type: PostDetailSchema,
+  })
+  @UseInterceptors(new TransformInterceptor(PostDetailSchema))
+  @UseGuards(JwtAuthGuard)
+  @Patch('/:postId/comment/:commentId')
+  async updateComment(
+    @Param('postId', ParseIntPipe) postId: number,
+    @Param('commentId', ParseIntPipe) commentId: number,
+    @Body() commentDto: PostCommentDto,
+    @Context() context: ContextDto,
+  ): Promise<PostEntity> {
+    await this.postService.throwExceptionIfNotExistById(postId);
+    await this.checkPermissionForPostComment(commentId, context.userId);
+    const comment: IdsPostComment = {
+      id: commentId,
+      postId,
+      userId: context.userId,
+    };
+    await this.postCommentService.throwExceptionIfNotExist(comment);
+    const commentEntity: PostCommentEntity =
+      await this.postCommentService.update(commentId, commentDto.text);
+    return this.postService.findByIdWithRelations(commentEntity.postId);
+  }
+
+  async checkPermissionForPost(postId: number, userId: number): Promise<void> {
     if ((await this.postService.findById(postId)).userId !== userId) {
+      throw new ForbiddenException('Forbidden resource');
+    }
+  }
+
+  async checkPermissionForPostComment(
+    commentId: number,
+    userId: number,
+  ): Promise<void> {
+    if ((await this.postCommentService.findById(commentId)).userId !== userId) {
       throw new ForbiddenException('Forbidden resource');
     }
   }

@@ -1,4 +1,4 @@
-type Like = {
+export type PostLike = {
   userId: number;
   postId: number;
 };

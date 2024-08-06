@@ -107,10 +107,4 @@ export class UserEntity {
     name: 'deletedAt',
   })
   deletedAt: Date;
-
-  @OneToMany(
-    () => PostLikeEntity,
-    (postLikeEntity: PostLikeEntity) => postLikeEntity.user,
-  )
-  likes: PostLikeEntity[];
 }
