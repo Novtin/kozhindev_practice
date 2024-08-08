@@ -1,4 +1,10 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+} from 'typeorm';
 import { UserEntity } from '../../user/entities/user.entity';
 import { PostEntity } from './post.entity';
 
@@ -31,4 +37,9 @@ export class PostLikeEntity {
     primary: true,
   })
   postId: number;
+
+  @CreateDateColumn({
+    name: 'createdAt',
+  })
+  createdAt: Date;
 }
