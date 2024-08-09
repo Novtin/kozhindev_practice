@@ -23,7 +23,6 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { Context } from '../../auth/decorators/context.decorator';
 import { ContextDto } from '../../auth/dtos/context.dto';
 import { UpdatePostDto } from '../dtos/update-post.dto';
-import { CreatePostDto } from '../dtos/create-post.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerImageOptions } from '../../../config/multer-image.config';
 import { PostLikeService } from '../services/post-like.service';
@@ -31,7 +30,7 @@ import { PaginationDto } from '../../../common/dtos/pagination.dto';
 import { TagDto } from '../../tag/dtos/tag.dto';
 import { TagService } from '../../tag/services/tag.service';
 import { TagEntity } from '../../tag/entities/tag.entity';
-import { PostTagsDto } from '../../tag/dtos/post-tags.dto';
+import { CreatePostDetailDto } from '../dtos/create-post-detail.dto';
 
 @ApiTags('post')
 @Controller('post')
@@ -104,14 +103,14 @@ export class PostController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(
-    @Body() createPostDto: CreatePostDto,
-    @Body() postTagsDto: PostTagsDto,
+    @Body() createPostDetailDto: CreatePostDetailDto,
     @Context() context: ContextDto,
   ): Promise<PostEntity> {
-    createPostDto.userId = context.userId;
-    const postEntity: PostEntity = await this.postService.create(createPostDto);
+    createPostDetailDto.userId = context.userId;
+    const postEntity: PostEntity =
+      await this.postService.create(createPostDetailDto);
     postEntity.tags = await Promise.all(
-      postTagsDto.tags.map(
+      createPostDetailDto.tags.map(
         async (tagDto: TagDto): Promise<TagEntity> =>
           await this.tagService.createIfNotExist(tagDto),
       ),

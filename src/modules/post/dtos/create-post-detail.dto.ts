@@ -1,8 +1,9 @@
+import { CreatePostDto } from './create-post.dto';
 import { ArrayNotEmpty, IsArray } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { TagDto } from './tag.dto';
+import { TagDto } from '../../tag/dtos/tag.dto';
 
-export class PostTagsDto {
+export class CreatePostDetailDto extends CreatePostDto {
   @IsArray()
   @ArrayNotEmpty()
   @Transform(({ value }) => {
