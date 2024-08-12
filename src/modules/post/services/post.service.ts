@@ -10,6 +10,9 @@ import { FileEntity } from '../../file/entities/file.entity';
 import { UserService } from '../../user/services/user.service';
 import { UserEntity } from '../../user/entities/user.entity';
 import { TagEntity } from '../../tag/entities/tag.entity';
+import { CreatePostDetailDto } from '../dtos/create-post-detail.dto';
+import { TagDto } from '../../tag/dtos/tag.dto';
+import { TagService } from '../../tag/services/tag.service';
 
 @Injectable()
 export class PostService {
@@ -18,6 +21,7 @@ export class PostService {
     private readonly postRepository: PostRepository,
     private readonly fileService: FileService,
     private readonly userService: UserService,
+    private readonly tagService: TagService,
   ) {}
 
   async findByIdWithRelations(id: number): Promise<PostEntity> {
@@ -56,6 +60,19 @@ export class PostService {
 
   async create(createDto: CreatePostDto): Promise<PostEntity> {
     return this.postRepository.create(createDto);
+  }
+
+  async createDetail(
+    createPostDetailDto: CreatePostDetailDto,
+  ): Promise<PostEntity> {
+    const postEntity: PostEntity = await this.create(createPostDetailDto);
+    postEntity.tags = await Promise.all(
+      createPostDetailDto.tags.map(
+        async (tagDto: TagDto): Promise<TagEntity> =>
+          await this.tagService.createIfNotExist(tagDto),
+      ),
+    );
+    return this.updateTags(postEntity.id, postEntity.tags);
   }
 
   async update(updateUserDto: UpdatePostDto): Promise<PostEntity> {

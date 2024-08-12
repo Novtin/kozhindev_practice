@@ -27,9 +27,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { multerImageOptions } from '../../../config/multer-image.config';
 import { PostLikeService } from '../services/post-like.service';
 import { PaginationDto } from '../../../common/dtos/pagination.dto';
-import { TagDto } from '../../tag/dtos/tag.dto';
 import { TagService } from '../../tag/services/tag.service';
-import { TagEntity } from '../../tag/entities/tag.entity';
 import { CreatePostDetailDto } from '../dtos/create-post-detail.dto';
 
 @ApiTags('post')
@@ -107,15 +105,7 @@ export class PostController {
     @Context() context: ContextDto,
   ): Promise<PostEntity> {
     createPostDetailDto.userId = context.userId;
-    const postEntity: PostEntity =
-      await this.postService.create(createPostDetailDto);
-    postEntity.tags = await Promise.all(
-      createPostDetailDto.tags.map(
-        async (tagDto: TagDto): Promise<TagEntity> =>
-          await this.tagService.createIfNotExist(tagDto),
-      ),
-    );
-    return this.postService.updateTags(postEntity.id, postEntity.tags);
+    return this.postService.createDetail(createPostDetailDto);
   }
 
   @ApiOkResponse({
