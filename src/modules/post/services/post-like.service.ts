@@ -1,7 +1,7 @@
 import { PostLikeRepository } from '../repositories/post-like.repository';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { PostLikeEntity } from '../entities/post-like.entity';
-import { PostLike } from '../types/post-like';
+import { PostLike } from '../types/post-like.type';
 
 @Injectable()
 export class PostLikeService {

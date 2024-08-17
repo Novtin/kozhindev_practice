@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PostCommentRepository } from '../repositories/post-comment.repository';
 import { PostCommentEntity } from '../entities/post-comment.entity';
-import { CreatePostComment } from '../types/create-post-comment';
-import { IdsPostComment } from '../types/ids-post-comment';
+import { CreatePostComment } from '../types/create-post-comment.type';
+import { IdsPostComment } from '../types/ids-post-comment.type';
 
 @Injectable()
 export class PostCommentService {

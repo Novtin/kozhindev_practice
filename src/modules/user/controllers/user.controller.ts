@@ -38,8 +38,10 @@ export class UserController {
   })
   @UseInterceptors(new TransformInterceptor(UserDetailSchema))
   @Get(':id')
-  findById(@Param('id', ParseIntPipe) userId: number): Promise<UserEntity> {
-    return this.userService.findByIdWithRelations(userId);
+  findByIdDetail(
+    @Param('id', ParseIntPipe) userId: number,
+  ): Promise<UserEntity> {
+    return this.userService.findByIdDetail(userId);
   }
 
   @ApiOkResponse({

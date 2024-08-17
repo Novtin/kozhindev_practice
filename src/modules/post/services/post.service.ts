@@ -24,9 +24,9 @@ export class PostService {
     private readonly tagService: TagService,
   ) {}
 
-  async findByIdWithRelations(id: number): Promise<PostEntity> {
+  async findByIdDetail(id: number): Promise<PostEntity> {
     await this.throwExceptionIfNotExistById(id);
-    return this.postRepository.findByIdWithRelations(id);
+    return this.postRepository.findByIdDetail(id);
   }
 
   async findById(id: number): Promise<PostEntity> {
@@ -48,7 +48,7 @@ export class PostService {
 
   async findFromSubscriptions(userId: number): Promise<PostEntity[]> {
     const userEntity: UserEntity =
-      await this.userService.findByIdWithRelations(userId);
+      await this.userService.findByIdDetail(userId);
     const postsFromSubscriptions: PostEntity[] = [];
     for (const subscription of userEntity.subscriptions) {
       postsFromSubscriptions.push(

@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PostCommentEntity } from '../entities/post-comment.entity';
-import { CreatePostComment } from '../types/create-post-comment';
-import { IdsPostComment } from '../types/ids-post-comment';
+import { CreatePostComment } from '../types/create-post-comment.type';
+import { IdsPostComment } from '../types/ids-post-comment.type';
 
 @Injectable()
 export class PostCommentRepository {

@@ -53,7 +53,7 @@ export class UserRepository {
     return this.dbRepository.findOneBy({ id });
   }
 
-  async findByIdWithRelations(id: number): Promise<UserEntity> {
+  async findByIdDetail(id: number): Promise<UserEntity> {
     return this.dbRepository.findOne({
       where: { id: id },
       relations: this.RELATIONS,
@@ -102,12 +102,12 @@ export class UserRepository {
 
   async update(updateUserDto: UpdateUserDto): Promise<UserEntity> {
     await this.dbRepository.update(updateUserDto.id, updateUserDto);
-    return await this.findByIdWithRelations(updateUserDto.id);
+    return await this.findByIdDetail(updateUserDto.id);
   }
 
   async updateAvatar(id: number, avatar: FileEntity): Promise<UserEntity> {
     await this.dbRepository.update(id, { avatar });
-    return await this.findByIdWithRelations(id);
+    return await this.findByIdDetail(id);
   }
 
   async deleteById(id: number): Promise<void> {
@@ -119,6 +119,6 @@ export class UserRepository {
     subscriptions: UserEntity[],
   ): Promise<UserEntity> {
     await this.dbRepository.save({ id, subscriptions });
-    return await this.findByIdWithRelations(id);
+    return await this.findByIdDetail(id);
   }
 }

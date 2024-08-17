@@ -52,9 +52,9 @@ export class UserService {
     return this.userRepository.findById(id);
   }
 
-  async findByIdWithRelations(id: number): Promise<UserEntity> {
+  async findByIdDetail(id: number): Promise<UserEntity> {
     await this.throwExceptionIfNotExistById(id);
-    return this.userRepository.findByIdWithRelations(id);
+    return this.userRepository.findByIdDetail(id);
   }
 
   async findByCriteria(
@@ -118,8 +118,8 @@ export class UserService {
 
   async subscribe(userId: number, subscriberId: number): Promise<UserEntity> {
     const subscriberEntity: UserEntity =
-      await this.findByIdWithRelations(subscriberId);
-    const userEntity: UserEntity = await this.findByIdWithRelations(userId);
+      await this.findByIdDetail(subscriberId);
+    const userEntity: UserEntity = await this.findByIdDetail(userId);
     if (
       subscriberEntity?.subscriptions?.find(
         (subscription: UserEntity): boolean =>
@@ -143,8 +143,8 @@ export class UserService {
 
   async unsubscribe(userId: number, subscriberId: number): Promise<UserEntity> {
     const subscriberEntity: UserEntity =
-      await this.findByIdWithRelations(subscriberId);
-    const userEntity: UserEntity = await this.findByIdWithRelations(userId);
+      await this.findByIdDetail(subscriberId);
+    const userEntity: UserEntity = await this.findByIdDetail(userId);
     if (
       !subscriberEntity?.subscriptions?.find(
         (subscription: UserEntity): boolean =>

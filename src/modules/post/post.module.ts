@@ -14,6 +14,7 @@ import { TagModule } from '../tag/tag.module';
 import { PostCommentService } from './services/post-comment.service';
 import { PostCommentRepository } from './repositories/post-comment.repository';
 import { PostCommentEntity } from './entities/post-comment.entity';
+import { PostCommentController } from './controllers/post-comment.controller';
 
 @Module({
   imports: [
@@ -31,6 +32,6 @@ import { PostCommentEntity } from './entities/post-comment.entity';
     PostCommentService,
     PostCommentRepository,
   ],
-  controllers: [PostController],
+  controllers: [PostController, PostCommentController],
 })
 export class PostModule {}
